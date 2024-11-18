@@ -64,12 +64,14 @@ const anoterTitle = ref('');
 const currentPage = ref(1);
 const maxPage = ref(1);
 
-const slideTransitionName = ref('input-slide');
-watch(currentPage, (newPage, oldPage) => {
-    if (newPage > oldPage) {
-        slideTransitionName.value = 'input-slide-next';
-    } else if (newPage < oldPage) {
-        slideTransitionName.value = 'input-slide-prev';
+//차후 구현 추가
+const nextUrl = computed(()=>{
+    if(props.isSignup === true && currentPage.value === maxPage.value){
+        //회원가입
+        return '/'
+    } else if (props.isSignup === false && currentPage.value === maxPage.value){
+        //로그인
+        return '/'
     }
 });
 
@@ -81,6 +83,23 @@ if(props.isSignup === true){
     formTitle.value = 'Sign In';
     anoterTitle.value = 'Sign Up';
 }
+
+const anotherSignUrl = computed(()=>{
+    if(props.isSignup === true){
+        return '/signin'
+    } else {
+        return '/signup'
+    }
+});
+
+const slideTransitionName = ref('input-slide');
+watch(currentPage, (newPage, oldPage) => {
+    if (newPage > oldPage) {
+        slideTransitionName.value = 'input-slide-next';
+    } else if (newPage < oldPage) {
+        slideTransitionName.value = 'input-slide-prev';
+    }
+});
 
 const goToNext = () => {
     if(currentPage.value < maxPage.value){
@@ -96,32 +115,10 @@ const goToPrevious = () => {
     }
 }
 
-const nextUrl = computed(()=>{
-    if(props.isSignup === true && currentPage.value === maxPage.value){
-        //회원가입
-        return '/'
-    } else if (props.isSignup === false && currentPage.value === maxPage.value){
-        //로그인
-        return '/'
-    }
-});
-
-const anotherSignUrl = computed(()=>{
-    if(props.isSignup === true){
-        return '/signin'
-    } else {
-        return '/signup'
-    }
-});
-
 // 브라우저의 뒤로 가기 버튼 처리
 const handlePopState = (e) => {
     if (currentPage.value == 1) {
-        if(referrer && referrer.includes('localhost:5173')){
-            window.history.back();
-        }else{
-            router.push('/');
-        }
+        router.back();
     } else if(e.state && e.state.page) {
         currentPage.value = e.state.page;
     }
@@ -129,14 +126,15 @@ const handlePopState = (e) => {
 
 //뒤로 가기 처리
 onMounted(() => {
-    window.history.pushState({page : currentPage.value}, ''); //초기 상태 push
+    window.history.replaceState({page : currentPage.value}, ''); //초기화
     window.addEventListener('popstate', handlePopState);
-})
+});
 
-// 컴포넌트가 unmounted 될 때 popstate 이벤트 제거
+//뒤로 가기 처리 정리
 onBeforeUnmount(() => {
+    window.history.replaceState({page : 1}, ''); //초기화
     window.removeEventListener('popstate', handlePopState)
-})
+});
 </script>
 
 <style scoped>
@@ -155,8 +153,7 @@ h2{
     font-size: 2rem;
     font-weight: bold;
 }
-.logo{
-}
+
 .sign-box{
     transform: translateY(-35px);
     display: flex;

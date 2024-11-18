@@ -4,6 +4,7 @@ import TimerListView from '@/views/TimerListView.vue'
 import TimerDetailView from '@/views/TimerDetailView.vue'
 import SigninView from '@/views/SigninView.vue'
 import SignupView from '@/views/SignupView.vue'
+import { useHistoryStore } from '@/stores/history';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -34,6 +35,11 @@ const router = createRouter({
       component: SignupView,
     },
   ],
+})
+
+router.beforeEach((to, from) => {
+  const store = useHistoryStore();
+  store.setPrevUrl(from.fullPath);
 })
 
 export default router

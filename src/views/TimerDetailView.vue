@@ -27,24 +27,21 @@
   
 <script setup>
 import MinimalLayout from '@/layouts/MinimalLayout.vue';
-
 import { useRouter } from 'vue-router';
+import { useHistoryStore } from '@/stores/history';
 
 const router = useRouter();
-
-const referrer = document.referrer;
-console.log(referrer)
+const store = useHistoryStore();
 
 const goBack = () => {
-  
-  if(referrer && referrer.includes('localhost:5173')){
-    window.history.back();
-  }else{
-    router.push('/');
+  const prevUrl = store.getPrevUrl();
+
+  if (prevUrl !== '/') {
+    router.back();
+  } else {
+    router.push({name: 'main'});
   }
-
 };
-
 </script>
 
 <style scoped>
