@@ -1,0 +1,20 @@
+:root{
+    --background-color: #101010;
+    --background-color2: #000;
+    --background-color3: #fff;
+    --text-color: #fff;
+    --point-color: #FE0013;
+    --border-color: #fff;
+    --border-color-50: rgba(255, 255, 255, .5);
+    --icon-color: #fff;
+}
+
+.light {
+    --background-color: #F2F2F2;
+    --background-color2: #fff;
+    --background-color3: #000;
+    --text-color: #000;
+    --border-color: #000;
+    /* --border-color-50: rgba(0, 0, 0, .5); */
+    --icon-color: #000;
+}
