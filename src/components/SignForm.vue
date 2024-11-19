@@ -26,11 +26,9 @@
                 {{ formTitle }}
             </btn>
             <div class="bottom-btn">
-                <router-link :to="anotherSignUrl">
-                    <btn class="point">
-                        {{ anoterTitle }}
-                    </btn>
-                </router-link>
+                <btn class="point" @click="goToAnotherSign">
+                    {{ anoterTitle }}
+                </btn>
             </div>
         </div>
     </div>
@@ -84,13 +82,19 @@ if(props.isSignup === true){
     anoterTitle.value = 'Sign Up';
 }
 
-const anotherSignUrl = computed(()=>{
+const anotherSign = computed(()=>{
     if(props.isSignup === true){
-        return '/signin'
+        return 'signin'
     } else {
-        return '/signup'
+        return 'signup'
     }
 });
+
+const goToAnotherSign = () => {
+    window.history.pushState({}, '', `/${anotherSign.value}`);
+
+    router.replace({name: anotherSign.value});
+};
 
 const slideTransitionName = ref('input-slide');
 watch(currentPage, (newPage, oldPage) => {
@@ -104,13 +108,6 @@ watch(currentPage, (newPage, oldPage) => {
 const goToNext = () => {
     if(currentPage.value < maxPage.value){
         currentPage.value++;
-        window.history.pushState({page : currentPage.value}, '');
-    }
-}
-
-const goToPrevious = () => {
-    if(currentPage.value < maxPage.value){
-        currentPage.value--;
         window.history.pushState({page : currentPage.value}, '');
     }
 }
@@ -195,7 +192,7 @@ h2{
     transform: translate(10px, 20px);
 }
 
-a, button{
+button{
     width: 100%;
     text-align: center;
 }
@@ -204,6 +201,7 @@ a, button{
     width: 100%;
     display: flex;
     align-items: flex-end;
+    justify-content: center;
     flex-grow: 1;
 }
 
