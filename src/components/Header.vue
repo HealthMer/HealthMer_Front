@@ -1,6 +1,6 @@
 <template>
     <header>
-        <Logo />
+        <Logo class="in-header"/>
         <div class="buttons">
             <BtnToggle @click="store.toggleTheme()"/>
             <span class="menu" @click="menuToggle">
@@ -42,7 +42,7 @@ import { useThemeStore } from '@/stores/theme';
 import MenuIconSvg from './icons/MenuIconSvg.vue';
 import Btn from './Btn.vue';
 import BtnToggle from './BtnToggle.vue';
-import Logo from './Logo.vue';
+import Logo from './common/Logo.vue';
 const store = useThemeStore();
 
 const isMenuOpen = ref(false);
@@ -62,7 +62,7 @@ header{
     width: 100%;
     height: 110px;
     background-color: transparent;
-    border-bottom: 1px solid var(--border-color-50);
+    border-bottom: 1px solid rgba(255, 255, 255, .5);
     display: flex;
     justify-content: space-between;
     align-items: center;
