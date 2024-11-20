@@ -4,8 +4,8 @@
         <div class="sign-form">
             <h2>{{ formTitle }}</h2>
 
-            <div class="slide-box">
-                    <transition-group :name="slideTransitionName">
+            <div class="slide-box" :style="{height: fitHeight + 'px'}">
+                <transition-group :name="slideTransitionName">
                     <div :key="currentPage" v-if="currentPage == 1" class="slide">
                         <InputField class="full" :placeholder="'이메일'"/>
                         <InputField class="full" :placeholder="'비밀번호'"/>
@@ -46,7 +46,7 @@
 import { onMounted, onBeforeUnmount, ref, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
-import Logo from './Logo.vue';
+import Logo from './common/Logo.vue';
 import Btn from './Btn.vue';
 import InputField from './InputField.vue';
 
@@ -61,6 +61,8 @@ const anoterTitle = ref('');
 
 const currentPage = ref(1);
 const maxPage = ref(1);
+
+const fitHeight = ref(200);
 
 //차후 구현 추가
 const nextUrl = computed(()=>{
@@ -114,10 +116,10 @@ const goToNext = () => {
 
 // 브라우저의 뒤로 가기 버튼 처리
 const handlePopState = (e) => {
-    if (currentPage.value == 1) {
-        router.back();
-    } else if(e.state && e.state.page) {
+    if(e.state && e.state.page) {
         currentPage.value = e.state.page;
+    } else {
+        router.back();
     }
 };
 
@@ -210,7 +212,6 @@ button{
 }
 
 .slide-box {
-    min-height: 200px;
     display: flex;
     width: 100%;
     position: relative;
