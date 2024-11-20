@@ -1,35 +1,21 @@
 <template>
-    <div class="timer-inner-container">
+    <div :class="{'grid' : isGrid}" class="timer-inner-container">
             <TimerlistItem v-for="item in items" :key="item.id" :item="item"/>
     </div>
 </template>
 
 <script setup>
 import { ref } from 'vue';
-
+import { useTimerStore } from '@/stores/timer';
 import TimerlistItem from './TimerlistItem.vue';
 
+defineProps({
+    isGrid: Boolean,
+});
 
-const items = ref([
-    {
-    id : 1,
-    userId : 1,
-    title : '제목 1',
-    viewsCount : 2,
-    completeCount : 3,
-    level : 1,
-    created_at : 2024-11-14,
-    },
-    {
-    id : 2,
-    userId : 1,
-    title : '제목 2',
-    viewsCount : 2,
-    completeCount : 3,
-    level : 1,
-    created_at : 2024-11-14,
-    },
-])
+const store = useTimerStore();
+
+const items = store.timers;
 
 
 </script>
@@ -42,4 +28,14 @@ const items = ref([
     padding: 2rem 1.6rem;
 }
 
+.timer-inner-container.grid{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(auto-fill, 200px);
+}
+
+.timer-inner-container a{
+    max-width: 100%;
+    padding: .8rem;
+}
 </style>

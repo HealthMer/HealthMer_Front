@@ -8,8 +8,10 @@
           </div>
 
           <Category />
-          <GridViewSvg /> <ListViewSvg />
-          <TimerList />
+          <ul class="list-change-btn">
+              <GridViewSvg @click="makeGrid"/> <ListViewSvg @click="makeList"/>
+          </ul>
+          <TimerList :isGrid="isGrid"/>
           
       </div>
   
@@ -33,6 +35,16 @@ const closeModal = () => {
     isModalOpen.value = false;
 };
 
+const isGrid = ref(false);
+
+const makeGrid = () => {
+    isGrid.value = true;
+};
+
+const makeList = () => {
+    isGrid.value = false;
+};
+
 import Modal from '@/components/Modal.vue';
 import AddTimerSvg from '@/components/icons/AddTimerSvg.vue';
 
@@ -46,63 +58,21 @@ import ListViewSvg from '@/components/icons/ListViewSvg.vue';
 
 </script>
 
-<style>
+<style scoped>
 #add-timer{
-    cursor: pointer;
-    transition: all .3s;
     text-align: center;
-}
-
-html.light #timer > *:not(.hand){
-    fill: #000;
-}
-
-#add-timer:hover > *{
-    filter: drop-shadow(0px 0px 6px #FE0013);
-    color: #FE0013;
-}
-
-html #add-timer:hover #timer > *{
-    fill: #FE0013;
-}
-
-#add-timer:hover #timer > .hand{
-    fill: #fff;
-    animation: rotate .8s ease forwards;
-}
-
-html.light #add-timer:hover #timer > .hand{
-    fill: #000;
-}
-
-#add-timer:not(:hover) #timer > .hand {
-    animation: rotate-reverse .8s ease forwards;
 }
 #add-timer > p{
     font-weight: bold;
     font-size: 2.3rem;
 }
 
-/* 애니메이션 */
+.list-change-btn{
+    display: flex;
+    width: 100%;
+    justify-content: flex-end;
+    padding: .1rem .785rem;
+}
 
-@keyframes rotate{
-    0%{
-        transform: rotate(0deg);
-        transform-origin: 88px 102px;
-    }
-    100%{
-        transform: rotate(180deg);
-        transform-origin: 88px 102px;
-    }
-}
-@keyframes rotate-reverse{
-    0%{
-        transform: rotate(180deg);
-        transform-origin: 88px 102px;
-    }
-    100%{
-        transform: rotate(0deg);
-        transform-origin: 88px 102px;
-    }
-}
+
 </style>

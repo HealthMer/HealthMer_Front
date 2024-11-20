@@ -14,10 +14,12 @@
           </div>
         </div>
         <div class="timer-control">
-          <hr>
-          <p class="play"></p>
-          <hr>
-          <p class="volume-on">
+          <p class="line"></p>
+          <p class="play">
+            <PlayBtnIcon />
+          </p>
+          <p class="line"></p>
+          <p class="volume on">
             <span class="material-symbols-outlined">volume_up</span>
           </p>
         </div>
@@ -27,6 +29,7 @@
   
 <script setup>
 import MinimalLayout from '@/layouts/MinimalLayout.vue';
+import PlayBtnIcon from '@/components/icons/PlayBtnIcon.vue';
 import { useRouter } from 'vue-router';
 import { useHistoryStore } from '@/stores/history';
 
@@ -45,13 +48,57 @@ const goBack = () => {
 </script>
 
 <style scoped>
-.back{
+.back {
   position: fixed;
   left: 0;
   top: 0;
   transform: translate(20px, 20px);
 }
-.timer .next{
-  opacity: .7;
+.timer {
+  display: flex;
+  font-weight: bold;
 }
+.timer .current {
+  font-size: 18vw;
+}
+.timer .next {
+  opacity: .7;
+  line-height: 6.5vw;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 11rem;
+}
+.timer .next p:first-child {
+  font-size: 4.45vw;
+}
+.timer .next p:last-child {
+  font-size: 10vw;
+}
+
+.timer-control{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.timer-control * {
+  margin: 0 1vw;
+}
+
+.timer-control .line {
+  width: 40%;
+  height: 1px;
+  background-color: var(--border-color);
+}
+
+.timer-control .volume{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 </style>
