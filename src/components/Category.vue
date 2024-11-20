@@ -19,9 +19,18 @@ const categories = ref([
 <style scoped>
 ul{
     display: flex;
+    flex-direction: row;
+    justify-content: center;
+    font-size: .9785rem;
+    height: fit-content;
+}
+ul li{
+ padding-left: .2rem;
+ cursor: pointer;
 }
 ul li:after{
     content: '|';
+    padding-left: .2rem;   
 }
 ul li:last-child:after{
     content: '';
