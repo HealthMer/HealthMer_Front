@@ -15,8 +15,8 @@
             <div class="right-page">
                 <ul>
                     <li><router-link :to="{name: 'timer-list'}">Timer</router-link></li>
-                    <li><router-link :to="{name: 'main'}">Video</router-link></li>
-                    <li><router-link :to="{name: 'main'}">Community</router-link></li>
+                    <!-- <li><router-link :to="{name: 'main'}">Video</router-link></li> -->
+                    <li><router-link :to="{name: 'community-list'}">Community</router-link></li>
                     <li><router-link :to="{name: 'main'}">MyPage</router-link></li>
                 </ul>
                 <hr />
