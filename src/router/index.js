@@ -1,9 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import MainView from '@/views/MainView.vue'
-import TimerListView from '@/views/TimerListView.vue'
-import TimerDetailView from '@/views/TimerDetailView.vue'
 import SigninView from '@/views/SigninView.vue'
 import SignupView from '@/views/SignupView.vue'
+import TimerListView from '@/views/TimerListView.vue'
+import TimerDetailView from '@/views/TimerDetailView.vue'
+import CommunityListView from '@/views/CommunityListView.vue'
 import { useHistoryStore } from '@/stores/history';
 
 const router = createRouter({
@@ -13,6 +14,16 @@ const router = createRouter({
       path: '/',
       name: 'main',
       component: MainView,
+    },
+    {
+      path: '/signin',
+      name: 'signin',
+      component: SigninView,
+    },
+    {
+      path: '/signup',
+      name: 'signup',
+      component: SignupView,
     },
     {
       path: '/timer',
@@ -25,14 +36,9 @@ const router = createRouter({
       component: TimerDetailView,
     },
     {
-      path: '/signin',
-      name: 'signin',
-      component: SigninView,
-    },
-    {
-      path: '/signup',
-      name: 'signup',
-      component: SignupView,
+      path: '/community',
+      name: 'community-list',
+      component: CommunityListView,
     },
   ],
 })
