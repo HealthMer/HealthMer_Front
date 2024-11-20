@@ -1,15 +1,21 @@
 <template>
-    <button>
+    <component :is="tag" class="box">
         <slot></slot>
-    </button>
+    </component>
 </template>
 
 <script setup>
-
+defineProps({
+    tag: {
+        type : String,
+        default: 'button',
+    }
+});
 </script>
 
 <style scoped>
-button{
+.box{
+    display: inline-block;
     padding: 10px;
     border: 1px solid var(--btn-color);
     border-radius: 8px;
