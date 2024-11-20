@@ -13,5 +13,56 @@
 </script>
 
 <style scoped>
+svg{
+    cursor: pointer;
+}
 
+#timer{
+    transition: all .3s;
+}
+
+.light #timer > *:not(.hand){
+    fill: var(--icon-color);
+}
+
+#timer:hover{
+    filter: drop-shadow(0px 0px 6px #FE0013);
+    color: #FE0013;
+}
+
+#add-timer:hover #timer > *{
+    fill: #FE0013;
+}
+
+#add-timer:hover #timer > .hand{
+    fill: #fff;
+    animation: rotate .8s ease forwards;
+}
+
+#add-timer:not(:hover) #timer > .hand {
+    animation: rotate-reverse .8s ease forwards;
+}
+
+/* 애니메이션 */
+
+@keyframes rotate{
+    0%{
+        transform: rotate(0deg);
+        transform-origin: 88px 102px;
+    }
+    100%{
+        transform: rotate(180deg);
+        transform-origin: 88px 102px;
+    }
+}
+@keyframes rotate-reverse{
+    0%{
+        transform: rotate(180deg);
+        transform-origin: 88px 102px;
+    }
+    100%{
+        transform: rotate(0deg);
+        transform-origin: 88px 102px;
+    }
+}
 </style>
