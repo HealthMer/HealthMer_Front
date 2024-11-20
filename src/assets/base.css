@@ -17,6 +17,7 @@ html, body, #body, #app{
 #body{
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 body {
@@ -33,14 +34,12 @@ input::placeholder{
 }
 
 main{
-  flex-grow: 1;
-}
-
-main{
+  width: 100%;
+  max-width: 1200px;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  width: 100%;
+  flex-grow: 1;
 }
 
 main > * {

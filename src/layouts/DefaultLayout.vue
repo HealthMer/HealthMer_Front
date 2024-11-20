@@ -19,7 +19,6 @@ import Footer from '@/components/Footer.vue';
 <style scoped>
 main{
   margin-top: 111px;
-  flex-grow: 1;
-  padding: 111px;
+  padding: 100px;
 }
 </style>
