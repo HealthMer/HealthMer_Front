@@ -1,6 +1,11 @@
 <template>
     <div :class="{'grid' : isGrid}" class="timer-inner-container">
-            <TimerlistItem v-for="item in store.timers" :key="item.id" :item="item"/>
+            <TimerlistItem
+                v-for="item in store.timers"
+                :key="item.id"
+                :item="item"
+                :updateTimerList="updateTimerList"
+                />
     </div>
 </template>
 
@@ -21,6 +26,10 @@ const route = useRoute();
 onMounted(()=>{
     store.getTimerList();
 });
+
+const updateTimerList = () => {
+    store.getTimerList();
+};
 
 </script>
 

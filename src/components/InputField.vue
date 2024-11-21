@@ -23,8 +23,6 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from 'vue';
-
 defineProps({
     placeholder : String,
     labelContent : String,

@@ -28,6 +28,7 @@ import { useRouter } from 'vue-router';
 
 const props = defineProps({
     item : Object,
+    updateTimerList : Function,
 });
 
 const store = useTimerStore();
@@ -38,10 +39,22 @@ const isGrid = ref(false);
 const isBoxOpen = ref(false);
 
 //삭제
-const deleteTimer = (id) => {
-    store.deleteTimer(id).then(()=>{
-        router.push('/timer');
-    });
+// const deleteTimer = (id) => {
+//     console.log("확인1")
+//     store.deleteTimer(id).then(()=>{
+//         console.log("확인용2")
+//         props.updateTimerList();
+//     });
+// };
+
+const deleteTimer = async (id) => {
+  try {
+    await store.deleteTimer(id);  // 비동기적으로 삭제 후 목록 갱신
+    console.log("타이머 삭제 완료");
+    props.updateTimerList();  // 목록 갱신
+  } catch (error) {
+    console.error('타이머 삭제 실패:', error);
+  }
 };
 
 

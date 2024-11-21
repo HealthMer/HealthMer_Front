@@ -4,6 +4,20 @@ import axios from 'axios';
 
 const REST_API_URL = `http://localhost:8080/api/v1/timer`;
 export const useTimerStore = defineStore('timer', () => {
+  const isOpenModal = ref(false);
+  
+  const toggleModal = () => {
+    isOpenModal.value = !isOpenModal.value;
+  };
+
+  const openModal = () => {
+    isOpenModal.value = true;
+  };
+
+  const closeModal = () => {
+    isOpenModal.value = false;
+  };
+
   const timers = ref([]);
 
   const getTimerList = () => {
@@ -29,6 +43,8 @@ export const useTimerStore = defineStore('timer', () => {
     axios.post(`${REST_API_URL}/create`, timerRequest)
       .then((res)=>{
         console.log('새로운 타이머 생성 완료:', res.data);
+        getTimerList();
+        return res.data;
       })
       .catch((err)=>{
         console.error('타이머 생성 실패: ', err);
@@ -57,6 +73,7 @@ export const useTimerStore = defineStore('timer', () => {
     axios.delete(`${REST_API_URL}/${id}`)
       .then((res)=>{
         console.log('타이머 삭제 완료:', res.data);
+        getTimerList();
       })
       .catch((err)=>{
         console.error('타이머 삭제 실패: ', err);
@@ -64,6 +81,7 @@ export const useTimerStore = defineStore('timer', () => {
   };
 
   return {
+    isOpenModal, toggleModal, openModal, closeModal,
     timers, getTimerList,
     healthCategory, gethealthCategory,
     oneCategory, getOneCategory,

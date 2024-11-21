@@ -171,7 +171,7 @@ const categoryBoxClass = computed(()=>{
 
 
 //전송
-const submitTimerData = () => {
+const submitTimerData = async () => {
 
     if(timerData.value.title.trim() === ''){
         alert('제목을 입력해주세요.');
@@ -206,9 +206,31 @@ const submitTimerData = () => {
         timerCategories : categories,
     };
 
-    timerStore.createTimer(timerRequest).then(()=>{
+    // timerStore.createTimer(timerRequest).then(()=>{
+    //     router.push('/timer');
+    // });
+
+    try{
+        await timerStore.createTimer(timerRequest);
+        console.log("타이머 등록 완료");
         router.push('/timer');
-    });
+        resetModal();
+    }catch(err){
+        console.error("타이머 등록 실패:", err);
+    }
+
+};
+
+// 모달 초기화
+const resetModal = () => {
+
+    timerStore.closeModal();
+    timerData.value = {
+        title: '',
+        level: 1,
+        routines: [],
+        categories: []
+    };
 };
 
 </script>

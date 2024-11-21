@@ -1,8 +1,7 @@
 <template>
     <default-layout>
-      
-      <div class="timer-list-container">
-          <div id="add-timer" @click="openModal">
+        <div class="timer-list-container">
+            <div id="add-timer" @click="openModal">
             <AddTimerSvg />
             <p>Add Timer</p>
           </div>
@@ -23,16 +22,21 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import { useTimerStore } from '@/stores/timer';
 
-const isModalOpen = ref(false);
+const store = useTimerStore();
+
+const isModalOpen = computed(()=>{
+    return store.isOpenModal;
+});
 
 const openModal = () => {
-    isModalOpen.value = true;
+    store.openModal();
 };
 
 const closeModal = () => {
-    isModalOpen.value = false;
+    store.closeModal();
 };
 
 const isGrid = ref(false);
