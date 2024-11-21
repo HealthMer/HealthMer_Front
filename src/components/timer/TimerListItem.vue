@@ -2,25 +2,48 @@
     <router-link :to="{name: 'timer-detail', params: {id: item.id}}">
         <ul class="list-item" :class="levelClass(item.level)">
             <li>{{ item.title }}</li>
-            <li>
-                <span>{{ totalTime }}</span>
+            <li class="right-side">
+                <div>{{ formatTime }}</div>
                 <PlayBtnIcon />
-                <span>...</span>
-                
+                <div class="see-more" @click.stop.prevent>
+                    <div class="icon" @click="isBoxOpen = !isBoxOpen">...</div>
+                    <div :class="{'open' : isBoxOpen}" class="box">
+                        <div class="inner">
+                            <p>타이머 수정</p>
+                            <p @click="deleteTimer(item.id)">타이머 삭제</p>
+                            <p>타이머 공유</p>
+                        </div>
+                    </div>
+                </div>
             </li>
         </ul>
     </router-link>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import PlayBtnIcon from '../icons/PlayBtnIcon.vue';
+import { useTimerStore } from '@/stores/timer';
+import { useRouter } from 'vue-router';
 
-defineProps({
+const props = defineProps({
     item : Object,
 });
 
+const store = useTimerStore();
+const router = useRouter();
+
 const isGrid = ref(false);
+
+const isBoxOpen = ref(false);
+
+//삭제
+const deleteTimer = (id) => {
+    store.deleteTimer(id).then(()=>{
+        router.push('/timer');
+    });
+};
+
 
 const levelClass = (level) => {
     switch(level){
@@ -39,43 +62,15 @@ const levelClass = (level) => {
     }
 };
 
-//임시 데이터
-const routines = ref([
-    {
-    id : 1,
-    timerInfoId : 1,
-    name : '루틴 1',
-    time : 6000,
-    isRest : false,
-    },
-    {
-    id : 2,
-    timerInfoId : 1,
-    name : '루틴 2',
-    time : 3000,
-    isRest : true,
-    },
-    {
-    id : 3,
-    timerInfoId : 1,
-    name : '루틴 3',
-    time : 7000,
-    isRest : false,
-    },
-]);
+const formatTime = computed(()=>{
+    const time = props.item.totalRoutineTime;
+    const min = Math.floor(time / 60);
+    const sec = time % 60;
 
-const totalTime = computed(()=>{
-    const totalMiliTime = routines.value.reduce((sum, routine) => sum + routine.time, 0);
+    const formatMin = min < 10 ? '0' + min : min;
+    const formatSec = sec < 10 ? '0' + sec : sec;
 
-    console.log(totalMiliTime);
-
-    let min = Math.floor(totalMiliTime / 60000);
-    const sec = Math.floor((totalMiliTime % 60000) / 1000);
-
-    if(min === 0){
-        min = '00';
-    }
-    return `${min}:${sec}`;
+    return `${formatMin}:${formatSec}`;
 });
 
 </script>
@@ -91,11 +86,13 @@ const totalTime = computed(()=>{
     align-items: center;
     color: #fff;
     border-radius: 30px;
+    background-color: #5FA3DA;
 }
 
 .grid .list-item{
     height: 100%;
 }
+
 /* 이후 색약 고려하기 */
 .level-1{
     background-color: #5FA3DA;
@@ -111,5 +108,57 @@ const totalTime = computed(()=>{
 }
 .level-5{
     background-color: #C34143;
+}
+
+.right-side{
+    display: flex;
+    align-items: center;
+}
+
+.see-more{
+    position: relative;
+}
+.see-more .box {
+    display: none;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 12px);
+    z-index: 1;
+}
+.see-more .box.open {
+    display: block;
+}
+.see-more .box::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -12px);
+    z-index: 1;
+    width: 0;
+    height: 0;
+    border-left: 9px solid transparent;
+    border-right: 9px solid transparent;
+    border-bottom: 12px solid #D9D9D9;
+}
+.see-more .box .inner {
+    background-color: #D9D9D9;
+    border-radius: 3px;
+    padding: .67rem 0;
+    width: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-size: .96rem;
+    color: #000;
+}
+.see-more .box .inner > * {
+    margin: .1rem 0;
+    padding: .1rem;
+    border-radius: 3px;
+    transition: background-color .3s;
+}
+.see-more .box .inner > *:hover {
+    background-color: rgba(0, 0, 0, .3);
 }
 </style>

@@ -15,7 +15,7 @@ defineProps({
 
 <style scoped>
 .box{
-    display: inline-block;
+    display: flex;
     padding: 10px;
     border: 1px solid var(--btn-color);
     border-radius: 8px;
@@ -25,6 +25,8 @@ defineProps({
     cursor: pointer;
     text-align: center;
     transition: background-color .3s, drop-shadow .3s;
+    align-items: center;
+    justify-content: center;
 }
 button:hover{
     background-color: var(--btn-color-25);

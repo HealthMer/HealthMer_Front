@@ -1,11 +1,12 @@
 <template>
     <div :class="{'grid' : isGrid}" class="timer-inner-container">
-            <TimerlistItem v-for="item in items" :key="item.id" :item="item"/>
+            <TimerlistItem v-for="item in store.timers" :key="item.id" :item="item"/>
     </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
 import { useTimerStore } from '@/stores/timer';
 import TimerlistItem from './TimerlistItem.vue';
 
@@ -15,8 +16,11 @@ defineProps({
 
 const store = useTimerStore();
 
-const items = store.timers;
+const route = useRoute();
 
+onMounted(()=>{
+    store.getTimerList();
+});
 
 </script>
 

@@ -1,54 +1,74 @@
 import { ref, watch } from 'vue'
 import { defineStore } from 'pinia'
+import axios from 'axios';
 
+const REST_API_URL = `http://localhost:8080/api/v1/timer`;
 export const useTimerStore = defineStore('timer', () => {
-  const timers = ref([
-    {
-    id : 1,
-    userId : 1,
-    title : '아침 루틴',
-    viewsCount : 2,
-    completeCount : 3,
-    level : 5,
-    created_at : 2024-11-14,
-    },
-    {
-    id : 2,
-    userId : 1,
-    title : '저녁 운동~~',
-    viewsCount : 2,
-    completeCount : 3,
-    level : 3,
-    created_at : 2024-11-15,
-    },
-    {
-      id : 3,
-      userId : 1,
-      title : '글자가 길어지면 어떻게 할지를 생각해 봐야 한다',
-      viewsCount : 2,
-      completeCount : 3,
-      level : 2,
-      created_at : 2024-11-19,
-    },
-    {
-      id : 4,
-      userId : 1,
-      title : '글자가 길어지면 어떻게 할지를 생각해 봐야 한다',
-      viewsCount : 2,
-      completeCount : 3,
-      level : 4,
-      created_at : 2024-11-19,
-    },
-    {
-      id : 5,
-      userId : 1,
-      title : '글자가 길어지면 어떻게 할지를 생각해 봐야 한다',
-      viewsCount : 2,
-      completeCount : 3,
-      level : 1,
-      created_at : 2024-11-19,
-    },
-  ]);
+  const timers = ref([]);
 
-  return { timers }
+  const getTimerList = () => {
+    axios.get(REST_API_URL)
+    .then((res)=>{
+      timers.value = res.data;
+    })
+    .catch((err)=>{
+      console.error("에러 발생: ", err);
+    });
+  };
+  
+  const routine = ref([]);
+
+  const getRoutine = (id) => {
+    axios.get(`${REST_API_URL}/${id}/routine`)
+    .then((res)=>{
+      routine.value = res.data;
+    });
+  };
+  
+  const createTimer = (timerRequest) => {
+    axios.post(`${REST_API_URL}/create`, timerRequest)
+      .then((res)=>{
+        console.log('새로운 타이머 생성 완료:', res.data);
+      })
+      .catch((err)=>{
+        console.error('타이머 생성 실패: ', err);
+      });
+  };
+
+  const healthCategory = ref([]);
+  
+  const gethealthCategory = () => {
+    axios.get(`${REST_API_URL}/category`)
+    .then((res)=>{
+      healthCategory.value = res.data;
+    });
+  };
+
+  const oneCategory = ref([]);
+
+  const getOneCategory = (id) => {
+    axios.get(`${REST_API_URL}/${id}/category`)
+    .then((res)=>{
+      oneCategory.value = res.data;
+    });
+  };
+
+  const deleteTimer = (id) => {
+    axios.delete(`${REST_API_URL}/${id}`)
+      .then((res)=>{
+        console.log('타이머 삭제 완료:', res.data);
+      })
+      .catch((err)=>{
+        console.error('타이머 삭제 실패: ', err);
+      });
+  };
+
+  return {
+    timers, getTimerList,
+    healthCategory, gethealthCategory,
+    oneCategory, getOneCategory,
+    routine, getRoutine,
+    createTimer,
+    deleteTimer,
+  }
 });

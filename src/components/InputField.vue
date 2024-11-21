@@ -1,16 +1,44 @@
 <template>
     <div class="input-field">
-        <input v-if="!isSelect && !isTextarea" type="text" :placeholder="placeholder"/>
-        <select v-if="isSelect" :placeholder="placeholder">
-            <option v-for="op in options" value="op.value" :key="op.value">{{ op.value }}</option>
+        <label v-if="isLabel" :for="id">{{ labelContent }}</label>
+        <input
+            v-if="!isSelect && !isTextarea"
+            :type="type"
+            :id="id"
+            :name="name"
+            :placeholder="placeholder"
+            :value="modelValue"
+            @input="updateValue"
+            />
+        <select
+            v-if="isSelect"
+            :id="id"
+            :name="name"
+            :placeholder="placeholder"
+            @input="updateValue"
+            >
+            <option v-for="op in options" :value="op.value" :key="op.value">{{ op.name }}</option>
         </select>
     </div>
 </template>
 
 <script setup>
+import { defineProps, defineEmits } from 'vue';
+
 defineProps({
     placeholder : String,
-    labelTitle : String,
+    labelContent : String,
+    type : String,
+    id : String,
+    name : String,
+    modelValue : {
+        type: [String, Number, Boolean],
+        default : '',
+    },
+    isLabel: {
+        type : Boolean,
+        default: false,
+    },
     isSelect: {
         type : Boolean,
         default: false,
@@ -21,6 +49,13 @@ defineProps({
     },
     options : Array,
 });
+
+const emit = defineEmits();
+
+const updateValue = (e) => {
+    emit('update:modelValue', e.target.value);
+};
+
 </script>
 
 <style scoped>
