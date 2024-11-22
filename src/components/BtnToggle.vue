@@ -13,7 +13,8 @@ const store = useThemeStore();
 .toggle{
     width: 122px;
     height: 46px;
-    background-color: var(--background-color2);
+    /* background-color: var(--background-color2); */
+    background-color: #fff;
     border: 1px solid var(--border-color);
     border-radius: 30px;
     cursor: pointer;
