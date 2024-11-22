@@ -106,6 +106,18 @@ nav .left-page {
     height: 100%;
     background-color: #313131;
 }
+
+nav .left-page::before {
+    content:'';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, #ffffff 10%, transparent 10%) 0 0, radial-gradient(circle, #ffffff 10%, transparent 10%) 5px 5px;
+    background-size: 10px 10px;
+    mix-blend-mode: overlay;
+}
 nav .right-page {
     position: relative;
     height: 100%;
