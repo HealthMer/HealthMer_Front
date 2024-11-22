@@ -21,4 +21,10 @@ main{
   margin-top: 111px;
   padding: 100px;
 }
+
+@media (max-width: 800px) {
+    main {
+        padding: 1rem;
+    }
+}
 </style>

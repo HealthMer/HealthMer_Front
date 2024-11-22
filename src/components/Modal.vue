@@ -6,7 +6,7 @@
     <transition name="modal-content">
         <div v-if="isModalOpen" class="modal content" @click="closeModal">
             <div id="close-modal" @click="closeModal">X</div>
-            <div id="content" @click.stop>
+            <div id="content" @click.stop @scroll.stop.prevent>
                 <slot></slot>
             </div>
         </div>

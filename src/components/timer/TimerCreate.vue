@@ -5,7 +5,7 @@
             <div class="inner-content">
                 <ul class="element-list">
                     <li class="element">
-                        <btn tag="div">Category</btn>
+                        <btn tag="div" class="mr">Category</btn>
                         <div :class="categoryBoxClass" class="category-box">
                             <div class="category-select-box">
                                 <div @click.stop="isCateGoryOpen = !isCateGoryOpen" class="select-category">
@@ -33,8 +33,8 @@
 
 
                     <li class="element">
-                        <btn>Title</btn>
-                        <InputField :id="'title'" :name="'title'" :type="'text'" v-model="timerData.title" class="full"/>
+                        <btn tag="div" class="mr">Title</btn>
+                        <InputField :id="'title'" :name="'title'" :type="'text'" v-model="timerData.title" class="full line"/>
                     </li>
 
 
@@ -42,33 +42,33 @@
                         :key="time.id"
                         class="element"
                         >
-                        <btn>Time {{ idx + 1 }}</btn>
+                        <btn tag="div" class="mr">Time {{ idx + 1 }}</btn>
                         <ul class="element-list">
-                            <li class="element">
-                                <btn>name</btn>
-                                <InputField :id="'name-'+time.id" :name="'name-'+time.id" :type="'text'" v-model="time.name" class="full"/>
+                            <li class="element mb small">
+                                <btn tag="div" class="mr small">name</btn>
+                                <InputField :id="'name-'+time.id" :name="'name-'+time.id" :type="'text'" v-model="time.name" class="full mr line"/>
                             </li>
-                            <li class="element">
-                                <btn>min : sec</btn>
-                                <InputField :id="'min-'+time.id" :name="'min-'+time.id" :type="'number'" v-model="time.min" class="full"/>
-                                :
-                                <InputField :id="'sec-'+time.id" :name="'sec-'+time.id" :type="'number'" v-model="time.sec" class="full"/>
+                            <li class="element mb small">
+                                <btn tag="div" class="mr small">min : sec</btn>
+                                <InputField :id="'min-'+time.id" :name="'min-'+time.id" :type="'number'" v-model="time.min" class="full line"/>
+                                <div class="middle-letter">:</div>
+                                <InputField :id="'sec-'+time.id" :name="'sec-'+time.id" :type="'number'" v-model="time.sec" class="full mr line"/>
                             </li>
-                            <li class="element">
-                                <btn>type</btn>
-                                <InputField :isSelect="true" :options="restOptions" :id="'type-'+time.id" :name="'type-'+time.id" v-model="time.type" class="full"/>
+                            <li class="element small">
+                                <btn tag="div" class="mr small">type</btn>
+                                <InputField :isSelect="true" :options="restOptions" :id="'type-'+time.id" :name="'type-'+time.id" v-model="time.type" class="full mr line"/>
                             </li>
                         </ul>
-                        <btn @click="removeInputTime(time.id)">X</btn>
+                        <btn @click="removeInputTime(time.id)" class="delete">X</btn>
                     </li>
 
 
                     <li class="element">
-                        <btn @click="addInputTime">+</btn>
+                        <btn @click.stop.prevent="addInputTime" class="full">+</btn>
                     </li>
                     <li class="element">
-                        <btn>Level</btn>
-                        <InputField :isSelect="true" :options="levelOptions" :id="'level'" :name="'level'" v-model="timerData.level" class="full"/>
+                        <btn tag="div" class="mr">Level</btn>
+                        <InputField :isSelect="true" :options="levelOptions" :id="'level'" :name="'level'" v-model="timerData.level" class="full line"/>
                     </li>
                 </ul>
             </div>
@@ -97,7 +97,7 @@ onMounted(()=>{
     timerData.value.routines.push({id: timeId.value++, name: '', min: 0, sec: 0, type: 0});
 });
 
-const testTitle = ref('');
+const isEditMode = ref(false);
 
 const timerData = ref({
     title: '',
@@ -239,7 +239,7 @@ const resetModal = () => {
 .inner {
     display: flex;
     color: black;
-    padding: 2rem;
+    padding: 2.5rem;
     flex-direction: column;
     height: 100%;
     max-height: calc(100vh - 2rem);
@@ -262,7 +262,8 @@ const resetModal = () => {
 }
 
 .inner > * {
-    margin: 1rem;
+    margin: 0 1rem;
+    margin-bottom: 2rem;
 }
 
 .inner .form {
@@ -275,13 +276,14 @@ const resetModal = () => {
 }
 
 .inner-content {
-    padding: 12px;
     border-radius: 8px;
     background-color: #DDDDDD;
     overflow: hidden;
     overflow-y: auto;
     flex-grow: 1;
-    max-height: calc(100% - 64px - 47px);
+    max-height: calc(100% - 64px - 80px - 3.5rem);
+    margin-top: 1rem;
+    margin-bottom: 2rem;
 }
 
 .category-box {
@@ -290,6 +292,7 @@ const resetModal = () => {
     min-height: 50px;
     border-radius: 8px;
     background-color: #fff;
+    border: 1px solid #000;
 }
 
 
@@ -407,8 +410,13 @@ const resetModal = () => {
     font-size: .97rem;
 }
 
+.bottom-btn {
+    height: 80px;
+}
+
 .bottom-btn > * {
     width: 100%;
+    height: 100%;
 }
 
 label {
@@ -417,14 +425,86 @@ label {
 
 /* btn 스타일 지정 */
 .box {
+    border-color: #000;
     color: #000;
+    flex: 0 0 7rem;
+    background-color: rgba(0, 0, 0, .5);
+    padding-top: 0px;
+    padding-bottom: 0px;
 }
+
+.box.delete {
+    flex: unset;
+}
+
+.box.full {
+    flex: 1;
+    height: 3rem;
+}
+
 div.box{
     cursor: default;
 }
 .box.set-timer {
     background-color: #000;
     color: #fff;
+    font-size: 1.8rem;
+}
+
+.input-field *{
+    height: 100% !important;
+}
+
+.element-list:first-child > .element {
+    margin: 1.4rem 1rem;
+}
+
+/* 공통 지정 */
+.mr {
+    margin-right: 10px;
+}
+.mb {
+    margin-bottom: 10px;
+}
+.box.small {
+    background-color: rgba(0, 0, 0, .3);
+}
+.element.small {
+    height: 3rem;
+}
+.middle-letter {
+    width: 3rem;
+    height: auto;
+    display: flex;
+    flex-grow: 1;
+    justify-content: center;
+    align-items: center;
+}
+
+@media (max-width: 680px) {
+    .inner {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .inner {
+        padding-left: .2rem;
+        padding-right: .2rem;
+    }
+}
+
+@media (max-width: 500px) {
+    .inner {
+        padding-left: 0rem;
+        padding-right: 0rem;
+        font-size: .9rem;
+    }
+    .inner .form {
+        margin-left: 0rem;
+        margin-right: 0rem;
+    }
 }
 
 </style>

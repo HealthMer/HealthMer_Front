@@ -66,4 +66,8 @@ const updateValue = (e) => {
 .input-field.full, .input-field.full *{
     width: 100%;
 }
+
+.line input, .line select{
+    border: 1px solid #000;
+}
 </style>
