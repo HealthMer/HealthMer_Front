@@ -5,7 +5,8 @@ import axios from 'axios';
 const REST_API_URL = `http://localhost:8080/api/v1/timer`;
 export const useTimerStore = defineStore('timer', () => {
   const isOpenModal = ref(false);
-  
+  const isEditMode = ref(false);
+
   const toggleModal = () => {
     isOpenModal.value = !isOpenModal.value;
   };
@@ -17,6 +18,10 @@ export const useTimerStore = defineStore('timer', () => {
   const closeModal = () => {
     isOpenModal.value = false;
   };
+
+  const changeToEditMode = () => {
+    isEditMode.value = true;
+  }
 
   const timers = ref([]);
 
@@ -30,6 +35,32 @@ export const useTimerStore = defineStore('timer', () => {
     });
   };
   
+  const oneTimer = ref({});
+
+  const getOneTimer = (id) => {
+    axios.get(`${REST_API_URL}/${id}`)
+    .then((res)=>{
+      oneTimer.value = res.data;
+    })
+    .catch((err)=>{
+      console.error("에러 발생: ", err);
+    });
+  };
+
+  const searchTimers = (searchCondition) => {
+
+    axios.get(`${REST_API_URL}/search`,{
+      params : searchCondition
+    })
+    .then((res)=>{
+      timers.value = res.data;
+    })
+    .catch((err)=>{
+      console.error("에러 발생: ", err);
+    });
+
+  };
+
   const routine = ref([]);
 
   const getRoutine = (id) => {
@@ -69,6 +100,17 @@ export const useTimerStore = defineStore('timer', () => {
     });
   };
 
+  const updateTimer = (id, updatedTimerRequest) => {
+    axios.put(`${REST_API_URL}/${id}`, updatedTimerRequest)
+      .then((res)=>{
+        console.log('타이머 수정 완료: ', res.data);
+        getTimerList();
+      })
+      .catch((err)=>{
+        console.error('타이머 수정 실패: ', err)
+      });
+  };
+
   const deleteTimer = (id) => {
     axios.delete(`${REST_API_URL}/${id}`)
       .then((res)=>{
@@ -82,11 +124,15 @@ export const useTimerStore = defineStore('timer', () => {
 
   return {
     isOpenModal, toggleModal, openModal, closeModal,
+    isEditMode, changeToEditMode,
+    createTimer,
+    oneTimer, getOneTimer,
     timers, getTimerList,
+    searchTimers,
+    updateTimer,
+    deleteTimer,
     healthCategory, gethealthCategory,
     oneCategory, getOneCategory,
     routine, getRoutine,
-    createTimer,
-    deleteTimer,
   }
 });

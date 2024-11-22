@@ -9,7 +9,7 @@
                     <div class="icon" @click="isBoxOpen = !isBoxOpen">...</div>
                     <div :class="{'open' : isBoxOpen}" class="box">
                         <div class="inner">
-                            <p>타이머 수정</p>
+                            <p @click="updateTimer(item.id)">타이머 수정</p>
                             <p @click="deleteTimer(item.id)">타이머 삭제</p>
                             <p>타이머 공유</p>
                         </div>
@@ -21,7 +21,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue';
+import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
 import PlayBtnIcon from '../icons/PlayBtnIcon.vue';
 import { useTimerStore } from '@/stores/timer';
 import { useRouter } from 'vue-router';
@@ -38,6 +38,21 @@ const isGrid = ref(false);
 
 const isBoxOpen = ref(false);
 
+const handleOutsideClick = (e) => {
+  const seeMoreBox = document.querySelector('.see-more .box');
+  if (seeMoreBox && !seeMoreBox.contains(e.target)) {
+    isBoxOpen.value = false;
+  }
+};
+
+onMounted(() => {
+  document.addEventListener('click', handleOutsideClick);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleOutsideClick);
+});
+
 //삭제
 // const deleteTimer = (id) => {
 //     console.log("확인1")
@@ -47,7 +62,19 @@ const isBoxOpen = ref(false);
 //     });
 // };
 
-const deleteTimer = async (id) => {
+const updateTimer = async (id) => {
+    await store.getOneTimer(id);
+    store.changeToEditMode();
+    store.openModal();
+};
+
+const deleteTimer = (id) => {
+    let confirmDelete = confirm("정말 삭제하시겠습니까?");
+    if(confirmDelete){
+        doDeleteTimer(id);
+    }
+};
+const doDeleteTimer = async (id) => {
   try {
     await store.deleteTimer(id);  // 비동기적으로 삭제 후 목록 갱신
     console.log("타이머 삭제 완료");

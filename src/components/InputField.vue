@@ -15,7 +15,8 @@
             :id="id"
             :name="name"
             :placeholder="placeholder"
-            @input="updateValue"
+            :value="modelValue"
+            @change="updateValue"
             >
             <option v-for="op in options" :value="op.value" :key="op.value">{{ op.name }}</option>
         </select>

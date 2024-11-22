@@ -1,18 +1,34 @@
 <template>
     <ul>
-        <li v-for="category in categories" :key="category.name">{{category.name}}</li>
+        <li v-for="category in categories" :key="category.name" @click="">{{category.name}}</li>
     </ul>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
+import { useTimerStore } from '@/stores/timer';
 
-const categories = ref([
-    {name: '전체'},
-    {name: '상체'},
-    {name: '하체'},
-    {name: '기타'},
-]);
+const store = useTimerStore();
+
+//구현 예정
+const search = () => {
+    const searchCondition = ref({
+        key : 'title',
+        word : '상체',
+        orderBy : '',
+        orderByDir : '',
+    });
+
+    store.searchTimers(searchCondition.value);
+}
+
+onMounted(()=>{
+    store.gethealthCategory();
+});
+
+const categories = computed(()=>{
+    return store.healthCategory;
+});
 
 </script>
 

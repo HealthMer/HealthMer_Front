@@ -1,7 +1,7 @@
 <template>
-    <div class="inner">
+    <div @click="isCateGoryOpen = false" class="inner">
         <div class="form">
-            <div class="title">Add Timer</div>
+            <div class="title">{{timerStore.isEditMode ? 'Edit Timer' : 'Add Timer'}}</div>
             <div class="inner-content">
                 <ul class="element-list">
                     <li class="element">
@@ -14,7 +14,7 @@
                                         <span @click.stop="removeCategory(category)" class="delete-btn">x</span>
                                     </p>
                                 </div>
-                                <div :class="{'open' : isCateGoryOpen}" class="category-select">
+                                <div @click.stop :class="{'open' : isCateGoryOpen}" class="category-select">
                                     <div v-for="(category) in categories"
                                     :key="category.id"
                                     class="category-option"
@@ -39,27 +39,27 @@
 
 
                     <li v-for="(time, idx) in timerData.routines"
-                        :key="time.id"
+                        :key="time.tid"
                         class="element"
                         >
                         <btn tag="div" class="mr">Time {{ idx + 1 }}</btn>
                         <ul class="element-list">
                             <li class="element mb small">
                                 <btn tag="div" class="mr small">name</btn>
-                                <InputField :id="'name-'+time.id" :name="'name-'+time.id" :type="'text'" v-model="time.name" class="full mr line"/>
+                                <InputField :id="'name-'+time.tid" :name="'name-'+time.tid" :type="'text'" v-model="time.name" class="full mr line"/>
                             </li>
                             <li class="element mb small">
                                 <btn tag="div" class="mr small">min : sec</btn>
-                                <InputField :id="'min-'+time.id" :name="'min-'+time.id" :type="'number'" v-model="time.min" class="full line"/>
+                                <InputField :id="'min-'+time.tid" :name="'min-'+time.tid" :type="'number'" v-model="time.min" class="full line"/>
                                 <div class="middle-letter">:</div>
-                                <InputField :id="'sec-'+time.id" :name="'sec-'+time.id" :type="'number'" v-model="time.sec" class="full mr line"/>
+                                <InputField :id="'sec-'+time.tid" :name="'sec-'+time.tid" :type="'number'" v-model="time.sec" class="full mr line"/>
                             </li>
                             <li class="element small">
                                 <btn tag="div" class="mr small">type</btn>
-                                <InputField :isSelect="true" :options="restOptions" :id="'type-'+time.id" :name="'type-'+time.id" v-model="time.type" class="full mr line"/>
+                                <InputField :isSelect="true" :options="restOptions" :id="'type-'+time.tid" :name="'type-'+time.tid" v-model="time.type" class="full mr line"/>
                             </li>
                         </ul>
-                        <btn @click="removeInputTime(time.id)" class="delete">X</btn>
+                        <btn @click="removeInputTime(time.tid)" class="delete">X</btn>
                     </li>
 
 
@@ -80,7 +80,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, computed } from 'vue';
+import { onMounted, ref, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import InputField from '@/components/InputField.vue';
 import Btn from '@/components/Btn.vue';
@@ -91,22 +91,43 @@ const timerStore = useTimerStore();
 
 const router = useRouter();
 
+const isCateGoryOpen = ref(false);
 
 onMounted(()=>{
     timerStore.gethealthCategory();
-    timerData.value.routines.push({id: timeId.value++, name: '', min: 0, sec: 0, type: 0});
+    if(!timerStore.isEditMode){
+        timerData.value.routines.push({tid: timeId.value++, name: '', min: 0, sec: 0, type: 0});
+    }
 });
 
-const isEditMode = ref(false);
+const newTimerReq = computed(()=>{
+    return timerStore.oneTimer;
+});
 
 const timerData = ref({
+    id: null,
     title: '',
     level: null,
     categories : [],
     routines: [],
 });
 
-
+if(timerStore.isEditMode){
+    watch(newTimerReq, (newTimer, oldTimer) => {
+        timerData.value.id = newTimer.timer.id;
+        timerData.value.title = newTimer.timer.title;
+        timerData.value.level = newTimer.timer.level;
+        timerData.value.categories = newTimer.timerCategories.map(c => c.healthCategoryId);
+        timerData.value.routines = newTimer.routines.map(r => ({
+        tid: timeId.value++,
+        id: r.id,
+        name: r.name,
+        min: Math.floor(r.time / 60), // 시간은 분으로 변환
+        sec: r.time % 60, // 나머지 시간은 초로 변환
+        type: r.isRest // 휴식 여부
+    }));
+    });
+}
 
 const levelOptions = ref([
     {value: 1,name: '아주 쉬움'},
@@ -124,19 +145,17 @@ const restOptions = ref([
 const timeId = ref(1);
 
 const addInputTime = () => {
-    timerData.value.routines.push({id: timeId.value++, name: '', min: 0, sec: 0, type: 0});
+    timerData.value.routines.push({tid: timeId.value++, name: '', min: 0, sec: 0, type: 0});
 };
 
-const removeInputTime = (id) => {
-    const idx = timerData.value.routines.findIndex(t => t.id === id);
+const removeInputTime = (tid) => {
+    const idx = timerData.value.routines.findIndex(t => t.tid === tid);
     timerData.value.routines.splice(idx, 1);
 }
 
 const categories = computed(()=>{
     return timerStore.healthCategory;
 });
-
-const isCateGoryOpen = ref(false);
 
 const isSelected = computed(()=>{
     return timerData.value.categories.length > 0;
@@ -171,16 +190,17 @@ const categoryBoxClass = computed(()=>{
 
 
 //전송
-const submitTimerData = async () => {
-
+const submitTimerData = () => {
     if(timerData.value.title.trim() === ''){
         alert('제목을 입력해주세요.');
         return;
     }
-    
+
     const routines = timerData.value.routines
     .filter(time => time.name.trim() !== '' && (time.min !== 0 || time.sec !== 0))
     .map(time=>({
+        id: time.id,
+        timerInfoId: timerData.value.id,
         name : time.name,
         time : parseInt(time.min) * 60 + parseInt(time.sec),
         isRest : parseInt(time.type),
@@ -193,6 +213,7 @@ const submitTimerData = async () => {
 
     const categories = timerData.value.categories
     .map(categoryId => ({
+        timerInfoId: timerData.value.id,
         healthCategoryId: categoryId,
     }));
 
@@ -206,6 +227,16 @@ const submitTimerData = async () => {
         timerCategories : categories,
     };
 
+
+    if(timerStore.isEditMode){
+        editTimerData(timerRequest);
+    }else{
+        addTimerData(timerRequest);
+    }
+};
+
+const addTimerData = async (timerRequest) => {
+
     // timerStore.createTimer(timerRequest).then(()=>{
     //     router.push('/timer');
     // });
@@ -218,6 +249,24 @@ const submitTimerData = async () => {
     }catch(err){
         console.error("타이머 등록 실패:", err);
     }
+
+};
+
+const editTimerData = async (timerRequest) => {
+
+    console.log("타이머 리퀘스트"+timerRequest);
+// timerStore.createTimer(timerRequest).then(()=>{
+//     router.push('/timer');
+// });
+
+try{
+    await timerStore.updateTimer(timerStore.oneTimer.timer.id, timerRequest);
+    console.log("타이머 수정 완료");
+    router.push('/timer');
+    resetModal();
+}catch(err){
+    console.error("타이머 수정 실패:", err);
+}
 
 };
 
