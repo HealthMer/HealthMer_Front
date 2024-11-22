@@ -44,6 +44,7 @@
 
 import { onMounted, onBeforeUnmount, ref, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
+import { loginUser, logoutUser, isAuthenticated, registerUser } from '../auth'
 
 import Logo from './common/Logo.vue';
 import Btn from './Btn.vue';
@@ -123,6 +124,19 @@ const goToNext = () => {
     if(currentPage.value < maxPage.value){
         currentPage.value++;
         window.history.pushState({page : currentPage.value}, '');
+    } else if (currentPage.value === maxPage.value) {
+        if (props.isSignup) {
+            console.log(email.value)
+            registerUser(
+                email.value, 
+                password.value, 
+                passcheck.value, 
+                nickname.value, 
+                age.value, 
+                gender.value);
+        } else {
+            loginUser(email.value, password.value);
+        }
     }
 }
 
