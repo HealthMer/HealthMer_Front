@@ -7,15 +7,14 @@
             <div class="slide-box" :style="{height: fitHeight + 'px'}">
                 <transition-group :name="slideTransitionName">
                     <div :key="currentPage" v-if="currentPage == 1" class="slide">
-                        <InputField class="full" :placeholder="'이메일'"/>
-                        <InputField class="full" :placeholder="'비밀번호'"/>
-                        <InputField class="full" :placeholder="'비밀번호 확인'" v-if="isSignup"/>
+                        <InputField :id="'email'" :name="'email'" :type="'email'" v-model="email" :placeholder="'이메일'" class="full"/>
+                        <InputField :id="'password'" :name="'password'" :type="'password'" v-model="password" :placeholder="'비밀번호'" class="full"/>
+                        <InputField v-if="isSignup" :id="'passcheck'" :name="'passcheck'" :type="'password'" v-model="passcheck" :placeholder="'비밀번호 확인'" class="full"/>
                     </div>
                     <div :key="currentPage" v-if="isSignup && currentPage == 2" class="slide">
-                        <InputField class="full" :placeholder="'비밀번호'"/>
-                    </div>
-                    <div :key="currentPage" v-if="isSignup && currentPage == 3" class="slide">
-                        <InputField class="full"/>
+                        <InputField :id="'nickname'" :name="'nickname'" :type="'text'" v-model="nickname" :placeholder="'닉네임'" class="full"/>
+                        <InputField :id="'age'" :name="'age'" :type="'number'" v-model="age" :placeholder="'나이'" class="full"/>
+                        <InputField :isSelect="true" :options="genderOptions" :id="'gender'" :name="'gender'" v-model="gender" class="full"/>
                     </div>
                 </transition-group>
             </div>
@@ -64,6 +63,19 @@ const maxPage = ref(1);
 
 const fitHeight = ref(200);
 
+//인풋 정보
+const email = ref('');
+const password = ref('');
+const passcheck = ref('');
+const nickname = ref('');
+const age = ref(null);
+const gender = ref('');
+const genderOptions = ref([
+    {value: 1, name: 'MALE'},
+    {value: 2, name: 'FEMALE'},
+    {value: 3, name: 'ETC'},
+]);
+
 //차후 구현 추가
 const nextUrl = computed(()=>{
     if(props.isSignup === true && currentPage.value === maxPage.value){
@@ -76,7 +88,7 @@ const nextUrl = computed(()=>{
 });
 
 if(props.isSignup === true){
-    maxPage.value = 3;
+    maxPage.value = 2;
     formTitle.value = 'Sign Up';
     anoterTitle.value = 'Sign In';
 }else{
