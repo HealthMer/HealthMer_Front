@@ -7,8 +7,8 @@
             <div class="slide-box" :style="{height: fitHeight + 'px'}">
                 <transition-group :name="slideTransitionName">
                     <div :key="currentPage" v-if="currentPage == 1" class="slide">
-                        <InputField :id="'email'" :name="'email'" :type="'email'" v-model="email" :placeholder="'이메일'" class="full"/>
-                        <InputField :id="'password'" :name="'password'" :type="'password'" v-model="password" :placeholder="'비밀번호'" class="full"/>
+                        <InputField :id="'email'" :name="'email'" :type="'email'" v-model.trim="email" :placeholder="'이메일'" class="full"/>
+                        <InputField :id="'password'" :name="'password'" :type="'password'" v-model.trim="password" :placeholder="'비밀번호'" class="full"/>
                         <InputField v-if="isSignup" :id="'passcheck'" :name="'passcheck'" :type="'password'" v-model="passcheck" :placeholder="'비밀번호 확인'" class="full"/>
                     </div>
                     <div :key="currentPage" v-if="isSignup && currentPage == 2" class="slide">
@@ -44,7 +44,7 @@
 
 import { onMounted, onBeforeUnmount, ref, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
-import { loginUser, logoutUser, isAuthenticated, registerUser } from '../auth'
+import { useUserStore } from '@/stores/user';
 
 import Logo from './common/Logo.vue';
 import Btn from './Btn.vue';
@@ -55,6 +55,7 @@ const props = defineProps({
 });
 
 const router = useRouter();
+const userStore = useUserStore();
 
 const formTitle = ref('');
 const anoterTitle = ref('');
@@ -126,16 +127,22 @@ const goToNext = () => {
         window.history.pushState({page : currentPage.value}, '');
     } else if (currentPage.value === maxPage.value) {
         if (props.isSignup) {
-            console.log(email.value)
-            registerUser(
+            // console.log("korea.....")
+            if (password.value !== passcheck.value) {
+                alert('비밀번호가 일치하지 않습니다.');
+                return;
+            }
+
+            // console.log(email.value);
+            userStore.registerUser(
                 email.value, 
-                password.value, 
-                passcheck.value, 
+                password.value,
                 nickname.value, 
                 age.value, 
-                gender.value);
+                gender.value
+            );
         } else {
-            loginUser(email.value, password.value);
+            userStore.loginUser(email.value, password.value);
         }
     }
 }
