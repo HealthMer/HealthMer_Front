@@ -1,8 +1,6 @@
 // src/auth.js
 import axios from 'axios';
-import { useRouter } from 'vue-router';
-
-const router = useRouter();
+import router from '@/router';
 
 // 회원가입 API 호출
 export const registerUser = async(email, password, passcheck, nickname, age, gender) => {
@@ -33,9 +31,10 @@ export const registerUser = async(email, password, passcheck, nickname, age, gen
         const response = await axios.post('http://localhost:8080/api/v1/auth/register/email', userData);
 
 
-        if (response.status === 200) {
+        if (response.status === 201) {
             alert('회원가입에 성공했습니다.');
-            router.push('/');
+            router.replace({name: 'main'});
+            return;
         }
     } catch (error) {
         console.error('회원가입 실패:', error);
