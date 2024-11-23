@@ -48,7 +48,7 @@ export const useUserStore = defineStore('user', () => {
     };
 
     // 회원가입 API 호출
-    const registerUser = async(email, password, passcheck, nickname, age, gender) => {
+    const registerUser = async(email, password, nickname, age, gender) => {
         try {
             const userData = {
                 email: email,
