@@ -105,6 +105,13 @@ nav .left-page {
     width: 425px;
     height: 100%;
     background-color: #313131;
+    background-image: url('../assets/pexels-eye4dtail-114738.jpg');
+    filter: grayscale(1) brightness(0.5) contrast(0.89);
+    background-size: cover;
+}
+
+.light nav .left-page {
+    filter: grayscale(1) brightness(1.5) contrast(0.89);
 }
 
 nav .left-page::before {
@@ -114,7 +121,7 @@ nav .left-page::before {
     top: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle, #ffffff 10%, transparent 10%) 0 0, radial-gradient(circle, #ffffff 10%, transparent 10%) 5px 5px;
+    background: radial-gradient(circle, #000000 10%, transparent 10%) 0 0, radial-gradient(circle, #ffffff 10%, transparent 10%) 5px 5px;
     background-size: 10px 10px;
     mix-blend-mode: overlay;
 }
