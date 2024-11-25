@@ -1,21 +1,13 @@
 <template>
     <minimal-layout>
       <div class="detail">
-        <div class="back" @click="goBack">
-          <-
+        <div class="head">
+          <i @click="goBack" class="fa-solid fa-arrow-left"></i>
           <span v-if="currRoutineIdx !== null"> {{ routine[currRoutineIdx].name }}</span>
         </div>
 
-        <div>
-          <button v-if="!isRunning && !isStarted" @click="startRoutine">시작</button>
-          <button v-if="!isRunning && isStarted" @click="resumeTimer">재개</button>
-          <button v-if="isRunning" @click="pauseTimer">정지</button>
-          <button @click="toggleMute">
-            {{ isMute ? "음성 켜기" : "음성 끄기" }}
-          </button>
-        </div>
-
         <div class="timer">
+          <div class="progress-background" :style="progressBackgroundStyle"></div>
           <div class="current">
             <p class="time">{{ currFormatTime }}</p>
           </div>
@@ -24,7 +16,7 @@
             <p v-if="currRoutineIdx !== null && currRoutineIdx < routine.length - 1">
              {{ nextFormatTime }}
             </p>
-            <p v-else>
+            <p v-else :class="{'no-routine' : currRoutineIdx === null || currRoutineIdx >= routine.length - 1}">
               No routine
             </p>
           </div>
@@ -33,12 +25,14 @@
         <div class="timer-control">
           <p class="line"></p>
           <p class="play">
-            <PlayBtnIcon />
+            <i v-if="!isRunning && !isStarted" @click="startRoutine" class="fa-solid fa-circle-play"></i>
+            <i v-if="!isRunning && isStarted" @click="resumeTimer" class="fa-solid fa-circle-play"></i>
+            <i v-if="isRunning" @click="pauseTimer" class="fa-solid fa-circle-pause"></i>
           </p>
           <p class="line"></p>
           <p @click="toggleMute" class="volume on">
-            <span class="material-symbols-outlined">volume_up</span>
-            {{ isMute ? "음성 켜기" : "음성 끄기" }}
+            <i v-if="isMute" class="fa-solid fa-volume-high"></i>
+            <i v-else class="fa-solid fa-volume-xmark"></i>
           </p>
         </div>
       </div>
@@ -47,7 +41,6 @@
 
 <script setup>
 import MinimalLayout from '@/layouts/MinimalLayout.vue';
-import PlayBtnIcon from '@/components/icons/PlayBtnIcon.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useHistoryStore } from '@/stores/history';
 import { useTimerStore } from '@/stores/timer';
@@ -158,12 +151,16 @@ const pauseTimer = () => {
 
 // 다시 재생
 const resumeTimer = () => {
-  if (currRoutineIdx.value !== null && currRoutineIdx.value < routine.value.length) {
+  if (!isRunning.value && currRoutineIdx.value !== null) {
     if (timeLeft.value === 0) {
-      moveToNextRoutine();  // 현재 루틴이 끝났으면 다음 루틴으로 넘어갑니다.
+      if (currRoutineIdx.value < routine.value.length - 1) {
+        moveToNextRoutine();
+      } else {
+        playTTS('루틴 종료.');
+        resetRoutine();
+      }
+    } else {
       startTimer();
-    } else if (timeLeft.value > 0 && !isRunning.value) {
-      startTimer();  // 현재 타이머를 재개합니다.
     }
   }
 };
@@ -237,37 +234,78 @@ onBeforeUnmount(()=>{
   removeResponsiveVoice();
 });
 
+
+
+
 </script>
 
 <style scoped>
-.back {
+
+.detail > .timer, .detail > .timer-control {
+  margin: clamp(12.5px, .25em, 2.5rem) 0;
+}
+.detail > .timer {
+  margin-top: clamp(20px, .4em, 4rem);
+}
+
+.head {
   position: fixed;
   left: 0;
   top: 0;
   transform: translate(20px, 20px);
+  display: flex;
+  justify-content: center;
+  font-size: clamp(1rem, 2vw, 1.5rem);
 }
+.head > * {
+  padding: 15px;
+  display: flex;
+  align-items: center;
+}
+.head i{
+  font-size: 2rem;
+}
+
 .timer {
   display: flex;
   font-weight: bold;
+  width: 90%;
+  justify-content: center;
+  align-items: center;
+  max-height: 217px;
+  font-size: clamp(1rem, 17vw, 217px);
 }
+
+.timer * {
+  line-height: 1 !important;
+}
+
 .timer .current {
-  font-size: 18vw;
+  width: 60%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .timer .next {
+  width: 40%;
   opacity: .7;
   line-height: 6.5vw;
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  margin-bottom: 11rem;
+  margin-bottom: 5.5rem;
 }
 .timer .next p:first-child {
-  font-size: 4.45vw;
+  font-size: clamp(1rem, 4.45vw, 52px);
 }
 .timer .next p:last-child {
-  font-size: 10vw;
+  font-size: clamp(1rem, 9.2vw, 109px);
+}
+
+.timer .next p:last-child.no-routine {
+  font-size: clamp(1rem, 5.1vw, 60px);
 }
 
 .timer-control{
@@ -275,6 +313,7 @@ onBeforeUnmount(()=>{
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: clamp(1rem, 4.45vw, 52px);
 }
 
 .timer-control * {
@@ -290,7 +329,22 @@ onBeforeUnmount(()=>{
 .timer-control .volume{
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  min-width: clamp(40px, 9vw, 120px);
+}
+
+.fa-solid {
+  font-size: clamp(1rem, 6vw, 5rem);
+}
+
+
+/* 배경 */
+.progress-background {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #C34141;
+  z-index: -1;
 }
 
 </style>

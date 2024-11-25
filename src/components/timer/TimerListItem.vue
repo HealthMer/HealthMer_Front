@@ -129,6 +129,12 @@ const formatTime = computed(()=>{
     background-color: #5FA3DA;
 }
 
+.list-item > *:first-child{
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
 .grid .list-item{
     height: 100%;
 }
@@ -153,6 +159,15 @@ const formatTime = computed(()=>{
 .right-side{
     display: flex;
     align-items: center;
+}
+
+.right-side > div:first-child {
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+.right-side > div:first-child {
+    font-size: 2.5rem;
+    font-weight: bold;
 }
 
 .see-more{
