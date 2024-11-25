@@ -1,15 +1,18 @@
 <template>
     <minimal-layout>
-      {{ routine }}
       <div class="detail">
         <div class="back" @click="goBack">
           <-
+          <span v-if="currRoutineIdx !== null"> {{ routine[currRoutineIdx].name }}</span>
         </div>
 
         <div>
-          <p>{{time}}</p>
-          <button @click="playTTS('start', '안 되나')">시작</button>
-          <button @click="playTTS2('end', '안 되나')">정지</button>
+          <button v-if="!isRunning && !isStarted" @click="startRoutine">시작</button>
+          <button v-if="!isRunning && isStarted" @click="resumeTimer">재개</button>
+          <button v-if="isRunning" @click="pauseTimer">정지</button>
+          <button @click="toggleMute">
+            {{ isMute ? "음성 켜기" : "음성 끄기" }}
+          </button>
         </div>
 
         <div class="timer">
@@ -18,7 +21,12 @@
           </div>
           <div class="next">
             <p>next routine</p>
-            <p class="time">{{ nextFormatTime }}</p>
+            <p v-if="currRoutineIdx !== null && currRoutineIdx < routine.length - 1">
+             {{ nextFormatTime }}
+            </p>
+            <p v-else>
+              No routine
+            </p>
           </div>
         </div>
 
@@ -28,154 +36,188 @@
             <PlayBtnIcon />
           </p>
           <p class="line"></p>
-          <p class="volume on">
+          <p @click="toggleMute" class="volume on">
             <span class="material-symbols-outlined">volume_up</span>
+            {{ isMute ? "음성 켜기" : "음성 끄기" }}
           </p>
         </div>
       </div>
     </minimal-layout>
 </template>
-  
+
 <script setup>
 import MinimalLayout from '@/layouts/MinimalLayout.vue';
 import PlayBtnIcon from '@/components/icons/PlayBtnIcon.vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useHistoryStore } from '@/stores/history';
 import { useTimerStore } from '@/stores/timer';
-import { ref, computed, onMounted, watch } from 'vue';
-
-
-const playTTS = (option, text) => {
-
-  if (!window.speechSynthesis) {
-    console.error("Speech Synthesis not supported in this browser.");
-  }
-
-  let optionText = '';
-  if(option === "start"){
-    optionText = " 시작";
-  }else if(option === "end"){
-    optionText = " 종료"
-  }
-
-  // TTS API 호출
-  const utterance = new SpeechSynthesisUtterance(text+optionText);
-  utterance.lang = 'ko-KR';
-  window.speechSynthesis.speak(utterance);
-};
-
-const playTTS2 = (option, text) => {
-
-  let optionText = '';
-  if(option === "start"){
-    optionText = " 시작";
-  }else if(option === "end"){
-    optionText = " 종료"
-  }
-
-  responsiveVoice.speak(text+optionText, "Korean Female");
-}
+import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue';
 
 const route = useRoute();
 const router = useRouter();
 const historyStore = useHistoryStore();
 const timerStore = useTimerStore();
 
-const routine = computed(()=>{
-  return timerStore.routine;
-});
+// routine 데이터 가져오기
+const id = route.params.id;
+timerStore.getRoutine(id);
 
-const currRoutineIdx = ref(0);
+const routine = computed(() => timerStore.routine);
 
-const currRoutine = computed(()=>{
-  const result = routine.value[currRoutineIdx.value];
-  return result ? result : {};
-});
-const nextRoutine = computed(()=>{
-  const result = routine.value[currRoutineIdx.value + 1];
-  return result ? result : {};
-});
+// 타이머용 변수
+const currRoutineIdx = ref(null);
+const timeLeft = ref(0);
+const timerInterval = ref(null);
+const isStarted = ref(false);
+const isRunning = ref(false);
+const isMute = ref(false);
 
-//타이머
-let timerInterval = null;
-const time = ref(0); //타이머 시간
-const isRunning = ref(false); //타이머가 시작됐는가
-const isPaused = ref(false); //타이머가 일시정지됐는가
+// routine 데이터 로드 후 타이머 초기화
+watch(routine, (newRoutine) => {
+  if (newRoutine.length > 0) {
+    timeLeft.value = newRoutine[0].time;
+    currRoutineIdx.value = 0;
+  }
+}, { immediate: true });
 
-//타이머 시작
-const startTimer = () => {
-  if(isRunning.value || currRoutineIdx.value >= routine.value.length) return;
-  isRunning.value = true;
-  isPaused.value = false;
-  startRoutineTimer(currRoutine.value.time);
+// 음성 on/off
+const toggleMute = () => {
+  isMute.value = !isMute.value;
 };
 
-const startRoutineTimer = (routineTime) => {
-  time.value = routineTime;
-  timerInterval = setInterval(()=>{
-    if(time.value > 0){
-      time.value--;
-    }else{
-      clearInterval(timerInterval);
-      currRoutineIdx.value++;
-      if(currRoutineIdx.value <= routine.value.length){
-        startRoutineTimer(currRoutine.value.time);
-      }else{
-        resetTimer();
-      }
-    }
-  },1000);
-};
-
-// 타이머 일시정지
-const pauseTimer = () => {
-  clearInterval(timerInterval); // 타이머 정지
-  isRunning.value = false;
-  isPaused.value = true;
-};
-
-// 타이머 재개
-const resumeTimer = () => {
-  if (isRunning.value || currRoutineIdx.value >= routine.value.length) return; // 이미 실행 중이거나 모든 루틴이 끝난 경우
-  isRunning.value = true;
-  isPaused.value = false;
-  startRoutineTimer(currentRoutine.value.time); // 일시정지된 타이머 재개
-};
-
-// 타이머 리셋
-const resetTimer = () => {
-  clearInterval(timerInterval)  // 타이머 정지
-  time.value = 0  // 시간 초기화
-  isRunning.value = false
-  isPaused.value = false
-  currRoutineIdx.value = 0  // 루틴 인덱스 리셋
-}
-
+// 분 : 초 형식으로 시간 변환
 const currFormatTime = computed(() => {
-  const min = String(Math.floor(time.value / 60)).padStart(2, '0')
-  const sec = String(time.value % 60).padStart(2, '0')
-  return `${min}:${sec}`
-})
+  const min = String(Math.floor(timeLeft.value / 60)).padStart(2, '0');
+  const sec = String(timeLeft.value % 60).padStart(2, '0');
+  return `${min}:${sec}`;
+});
 
 const nextFormatTime = computed(() => {
-  const nextTime = nextRoutine.value.time;
-  if(!nextTime) return null;
-  const min = String(Math.floor(nextTime / 60)).padStart(2, '0')
-  const sec = String(nextTime % 60).padStart(2, '0')
-  return `${min}:${sec}`
-})
+  if (currRoutineIdx.value !== null && currRoutineIdx.value < routine.value.length - 1) {
+    const nextRoutine = routine.value[currRoutineIdx.value + 1];
+    const min = String(Math.floor(nextRoutine.time / 60)).padStart(2, '0');
+    const sec = String(nextRoutine.time % 60).padStart(2, '0');
+    return `${min}:${sec}`;
+  }
+  return '';
+});
 
-// const currFormatTime = computed(()=>{
-//     const min = Math.floor(time / 60);
-//     const sec = time % 60;
+// 최초 루틴 시작
+const startRoutine = () => {
+  if (routine.value.length === 0) {
+    alert('루틴이 비어 있습니다.');
+    return;
+  }
+  currRoutineIdx.value = 0;
+  isStarted.value = true;
+  startTimer();
+};
 
-//     const formatMin = min < 10 ? '0' + min : min;
-//     const formatSec = sec < 10 ? '0' + sec : sec;
+// 타이머 재생
+const startTimer = () => {
+  if (currRoutineIdx.value === null || currRoutineIdx.value >= routine.value.length) return;
 
-//     return `${formatMin}:${formatSec}`;
-// });
+  const currentTask = routine.value[currRoutineIdx.value];
+  if (timeLeft.value === 0) {
+    timeLeft.value = currentTask.time;
+  }
+  isRunning.value = true;
 
+  playTTS(`${currentTask.name} 시작`);
 
+  timerInterval.value = setInterval(() => {
+    if (timeLeft.value > 0) {
+      timeLeft.value--;
+    } else {
+      clearInterval(timerInterval.value);
+      moveToNextRoutine();
+    }
+  }, 1000);
+};
+
+// 다음 루틴으로 이동
+const moveToNextRoutine = () => {
+  currRoutineIdx.value++;
+  if (currRoutineIdx.value < routine.value.length) {
+    timeLeft.value = 0;
+    startTimer();
+  } else {
+    playTTS('루틴 종료.');
+    resetRoutine();
+  }
+};
+
+// 일시 정지
+const pauseTimer = () => {
+  if (timerInterval.value) {
+    clearInterval(timerInterval.value);
+    timerInterval.value = null;
+    isRunning.value = false;
+  }
+};
+
+// 다시 재생
+const resumeTimer = () => {
+  if (currRoutineIdx.value !== null && currRoutineIdx.value < routine.value.length) {
+    if (timeLeft.value === 0) {
+      moveToNextRoutine();  // 현재 루틴이 끝났으면 다음 루틴으로 넘어갑니다.
+      startTimer();
+    } else if (timeLeft.value > 0 && !isRunning.value) {
+      startTimer();  // 현재 타이머를 재개합니다.
+    }
+  }
+};
+
+// 루틴 상태 초기화
+const resetRoutine = () => {
+  if (timerInterval.value) {
+    clearInterval(timerInterval.value);
+    timerInterval.value = null;
+  }
+  currRoutineIdx.value = null;
+  timeLeft.value = 0;
+  isStarted.value = false;
+  isRunning.value = false;
+};
+
+// TTS(Text-to-speech) 소리 재생
+const playTTS = (text) => {
+  //브라우저 음성이 없을 경우 다른 API(responsiveVoice)로 재생
+  if (!window.speechSynthesis) {
+    console.error("Speech Synthesis not supported in this browser.");
+    playTTS2(text);
+    return;
+  }
+
+  if (!isMute.value) {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'ko-KR';
+    window.speechSynthesis.speak(utterance);
+  }
+};
+
+// responsiveVoice
+const playTTS2 = (text) => {
+  responsiveVoice.speak(text, "Korean Female");
+};
+
+const insertResponsiveVoice = () => {
+  if(!document.querySelector("#responsivevoice")){
+    const script = document.createElement('script');
+    script.id = 'responsivevoice';
+    script.src = 'https://code.responsivevoice.org/responsivevoice.js?key=XfoVXC5h';
+    document.body.appendChild(script);
+  }
+}
+
+const removeResponsiveVoice = () => {
+  const script = document.querySelector("#responsivevoice");
+  if(script){
+    document.body.removeChild(script);
+  }
+};
+
+//뒤로 가기
 const goBack = () => {
   const prevUrl = historyStore.getPrevUrl();
 
@@ -187,8 +229,12 @@ const goBack = () => {
 };
 
 onMounted(()=>{
-  timerStore.getRoutine(route.params.id);
-  startTimer();
+  insertResponsiveVoice();
+});
+
+onBeforeUnmount(()=>{
+  resetRoutine();
+  removeResponsiveVoice();
 });
 
 </script>
