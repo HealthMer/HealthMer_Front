@@ -27,27 +27,46 @@ watch(() => props.isMenuOpen, (newValue, oldValue) => {
 <style scoped>
 svg rect {
     transform-origin: center;
-    animation-timing-function:cubic-bezier(.5,-800,.5,800);
 }
 
+
+
 svg.back rect:nth-child(1){
-    animation: editToBackTop .5s forwards;
+    animation: editToBackTop .5s forwards cubic-bezier(.5,0,.5,1);
+    -moz-animation: editToBackTop .5s forwards cubic-bezier(.5,0,.5,1); /* Firefox */
+    -webkit-animation: editToBackTop .5s forwards cubic-bezier(.5,0,.5,1); /* Safari and  Chrome */
+    -o-animation: editToBackTop .5s forwards cubic-bezier(.5,0,.5,1); /* Opera */
 }
 svg.back rect:nth-child(2){
-    animation: editToBackMiddle .5s forwards;
+    animation: editToBackMiddle .5s forwards cubic-bezier(.5,0,.5,1);
+    -moz-animation: editToBackMiddle .5s forwards cubic-bezier(.5,0,.5,1); /* Firefox */
+    -webkit-animation: editToBackMiddle .5s forwards cubic-bezier(.5,0,.5,1); /* Safari and  Chrome */
+    -o-animation: editToBackMiddle .5s forwards cubic-bezier(.5,0,.5,1); /* Opera */
 }
 svg.back rect:nth-child(3){
-    animation: editToBackBottom .5s forwards;
+    animation: editToBackBottom .5s forwards cubic-bezier(.5,0,.5,1);
+    -moz-animation: editToBackBottom .5s forwards cubic-bezier(.5,0,.5,1); /* Firefox */
+    -webkit-animation: editToBackBottom .5s forwards cubic-bezier(.5,0,.5,1); /* Safari and  Chrome */
+    -o-animation: editToBackBottom .5s forwards cubic-bezier(.5,0,.5,1); /* Opera */
 }
 
 svg.cancel rect:nth-child(1){
-    animation: editToCancelTop .5s forwards;
+    animation: editToCancelTop .5s forwards cubic-bezier(.5,0,.5,1);
+    -moz-animation: editToCancelTop .5s forwards cubic-bezier(.5,0,.5,1); /* Firefox */
+    -webkit-animation: editToCancelTop .5s forwards cubic-bezier(.5,0,.5,1); /* Safari and  Chrome */
+    -o-animation: editToCancelTop .5s forwards cubic-bezier(.5,0,.5,1); /* Opera */
 }
 svg.cancel rect:nth-child(2){
-    animation: editToCancelMiddle .5s forwards;
+    animation: editToCancelMiddle .5s forwards cubic-bezier(.5,0,.5,1);
+    -moz-animation: editToCancelMiddle .5s forwards cubic-bezier(.5,0,.5,1); /* Firefox */
+    -webkit-animation: editToCancelMiddle .5s forwards cubic-bezier(.5,0,.5,1); /* Safari and  Chrome */
+    -o-animation: editToCancelMiddle .5s forwards cubic-bezier(.5,0,.5,1); /* Opera */
 }
 svg.cancel rect:nth-child(3){
-    animation: editToCancelBottom .5s forwards;
+    animation: editToCancelBottom .5s forwards cubic-bezier(.5,0,.5,1);
+    -moz-animation: editToCancelBottom .5s forwards cubic-bezier(.5,0,.5,1); /* Firefox */
+    -webkit-animation: editToCancelBottom .5s forwards cubic-bezier(.5,0,.5,1); /* Safari and  Chrome */
+    -o-animation: editToCancelBottom .5s forwards cubic-bezier(.5,0,.5,1); /* Opera */
 }
 
 
@@ -104,7 +123,7 @@ svg.cancel rect:nth-child(3){
         display: none;
     }
     50% {
-        display: block;
+        display: none;
     }
     100% {
         display: block;
