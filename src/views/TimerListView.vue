@@ -1,7 +1,7 @@
 <template>
     <default-layout>
         <div class="timer-list-container">
-            <div id="add-timer" @click="openModal">
+            <div id="add-timer" @click="addTimer">
             <AddTimerSvg />
             <p>Add Timer</p>
           </div>
@@ -31,7 +31,8 @@ const isModalOpen = computed(()=>{
     return store.isOpenModal;
 });
 
-const openModal = () => {
+const addTimer = () => {
+    store.changeToDefaultMode();
     store.openModal();
 };
 
