@@ -57,6 +57,7 @@ svg.cancel rect:nth-child(1){
     -o-animation: editToCancelTop .5s forwards cubic-bezier(.5,0,.5,1); /* Opera */
 }
 svg.cancel rect:nth-child(2){
+    display: none;
     animation: editToCancelMiddle .5s forwards cubic-bezier(.5,0,.5,1);
     -moz-animation: editToCancelMiddle .5s forwards cubic-bezier(.5,0,.5,1); /* Firefox */
     -webkit-animation: editToCancelMiddle .5s forwards cubic-bezier(.5,0,.5,1); /* Safari and  Chrome */
