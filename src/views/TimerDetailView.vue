@@ -7,7 +7,10 @@
         </div>
 
         <div class="timer">
-          <div class="progress-background" :style="progressBackgroundStyle"></div>
+          <div class="progress-background"
+            :class="progressClass"
+            :style="progressStyle"
+          ></div>
           <div class="current">
             <p class="time">{{ currFormatTime }}</p>
           </div>
@@ -31,7 +34,7 @@
           </p>
           <p class="line"></p>
           <p @click="toggleMute" class="volume on">
-            <i v-if="isMute" class="fa-solid fa-volume-high"></i>
+            <i v-if="!isMute" class="fa-solid fa-volume-high"></i>
             <i v-else class="fa-solid fa-volume-xmark"></i>
           </p>
         </div>
@@ -236,11 +239,36 @@ onBeforeUnmount(()=>{
 
 
 
+// 배경
+const progressClass = ref('');
+const progressStyle = computed(() => {
+  if (currRoutineIdx.value === null || routine.value.length === 0) {
+    return { '--progress-translate': '-100%' };
+  }
+
+  const currentRoutine = routine.value[currRoutineIdx.value];
+  const progress = ((currentRoutine.time - timeLeft.value) / currentRoutine.time) * 100;
+  
+  const leftColor = currRoutineIdx.value % 2 === 0 ? '#5FDAA3' : '#C34141'; // 녹색 / 붉은색
+  const rightColor = currRoutineIdx.value % 2 === 0 ? '#C34141' : '#5FDAA3'; // 붉은색 / 녹색
+
+  if(currRoutineIdx.value % 2 === 0){
+    progressClass.value = 'red-to-green';
+  }else{
+    progressClass.value = 'green-to-red';
+  }
+
+  return { '--progress-translate': `${progress - 100}%`, '--left-color' : `${leftColor}`, '--right-color' : `${rightColor}` }; // translateX 값 업데이트
+});
+
+
 
 </script>
 
 <style scoped>
-
+* {
+  color: #fff;
+}
 .detail > .timer, .detail > .timer-control {
   margin: clamp(12.5px, .25em, 2.5rem) 0;
 }
@@ -323,7 +351,7 @@ onBeforeUnmount(()=>{
 .timer-control .line {
   width: 40%;
   height: 1px;
-  background-color: var(--border-color);
+  background-color: #fff;
 }
 
 .timer-control .volume{
@@ -337,14 +365,56 @@ onBeforeUnmount(()=>{
   font-size: clamp(1rem, 6vw, 5rem);
 }
 
-
-/* 배경 */
 .progress-background {
   position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
   width: 100%;
   height: 100%;
-  background-color: #C34141;
+  background-color: var(--right-color, #C34141);
   z-index: -1;
+  overflow: hidden;
 }
+.progress-background::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: calc(100% + 150px);
+  height: 100%;
+  background-image: linear-gradient(to right, var(--left-color, #5FDAA3) calc(100% - 150px), var(--right-color, #C34141));
+  z-index: 0;
+  transform: translateX(var(--progress-translate, -100%)); /* 기본값은 -100% */
+  transition: transform 1s linear;
+  display: none;
+}
+.progress-background.red-to-green::before{
+  display: block;
+}
+
+.progress-background::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: calc(100% + 150px);
+  height: 100%;
+  background-image: linear-gradient(to right, var(--left-color, #C34141) calc(100% - 150px), var(--right-color, #5FDAA3));
+  z-index: 0;
+  transform: translateX(var(--progress-translate, -100%)); /* 기본값은 -100% */
+  transition: transform 1s linear;
+  display: none;
+}
+.progress-background.green-to-red::after{
+  display: block;
+}
+
+
 
 </style>
