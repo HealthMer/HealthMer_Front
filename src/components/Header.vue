@@ -21,13 +21,16 @@
                 </ul>
                 <hr />
                 <ul>
-                    <li>
+                    <li v-if="!userStore.token">
                         <btn>
                             <router-link :to="{name: 'signin'}">Sign in</router-link>
                         </btn>
                         <btn>
                             <router-link :to="{name: 'signup'}">Sign up</router-link>
                         </btn>
+                    </li>
+                    <li v-else>
+                        <btn @click="userStore.logoutUser">Logout</btn>
                     </li>
                 </ul>
             </div>
@@ -43,6 +46,9 @@ import MenuIconSvg from './icons/MenuIconSvg.vue';
 import Btn from './Btn.vue';
 import BtnToggle from './BtnToggle.vue';
 import Logo from './common/Logo.vue';
+import { useUserStore } from '@/stores/user';
+
+const userStore = useUserStore();
 const store = useThemeStore();
 
 const isMenuOpen = ref(false);

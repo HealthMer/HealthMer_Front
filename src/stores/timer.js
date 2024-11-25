@@ -1,8 +1,22 @@
 import { ref, watch } from 'vue'
 import { defineStore } from 'pinia'
-import axios from 'axios';
+import apiClient from '@/api/axiosInstance';
+
+export default {
+  methods: {
+    async fetchData() {
+      try {
+        const response = await apiClient.get('/data');
+        console.log(response.data);
+      } catch (error) {
+        console.error('API 호출 오류:', error);
+      }
+    }
+  }
+};
 
 const REST_API_URL = `http://localhost:8080/api/v1/timer`;
+
 export const useTimerStore = defineStore('timer', () => {
   const isOpenModal = ref(false);
   const isEditMode = ref(false);
@@ -30,7 +44,7 @@ export const useTimerStore = defineStore('timer', () => {
   const timers = ref([]);
 
   const getTimerList = () => {
-    axios.get(REST_API_URL)
+    apiClient.get(REST_API_URL)
     .then((res)=>{
       timers.value = res.data;
     })
@@ -42,7 +56,7 @@ export const useTimerStore = defineStore('timer', () => {
   const oneTimer = ref({});
 
   const getOneTimer = (id) => {
-    axios.get(`${REST_API_URL}/${id}`)
+    apiClient.get(`${REST_API_URL}/${id}`)
     .then((res)=>{
       oneTimer.value = res.data;
     })
@@ -53,7 +67,7 @@ export const useTimerStore = defineStore('timer', () => {
 
   const searchTimers = (searchCondition) => {
 
-    axios.get(`${REST_API_URL}/search`,{
+    apiClient.get(`${REST_API_URL}/search`,{
       params : searchCondition
     })
     .then((res)=>{
@@ -68,14 +82,14 @@ export const useTimerStore = defineStore('timer', () => {
   const routine = ref([]);
 
   const getRoutine = (id) => {
-    axios.get(`${REST_API_URL}/${id}/routine`)
+    apiClient.get(`${REST_API_URL}/${id}/routine`)
     .then((res)=>{
       routine.value = res.data;
     });
   };
   
   const createTimer = (timerRequest) => {
-    axios.post(`${REST_API_URL}/create`, timerRequest)
+    apiClient.post(`${REST_API_URL}/create`, timerRequest)
       .then((res)=>{
         console.log('새로운 타이머 생성 완료:', res.data);
         getTimerList();
@@ -89,7 +103,7 @@ export const useTimerStore = defineStore('timer', () => {
   const healthCategory = ref([]);
   
   const gethealthCategory = () => {
-    axios.get(`${REST_API_URL}/category`)
+    apiClient.get(`${REST_API_URL}/category`)
     .then((res)=>{
       healthCategory.value = res.data;
     });
@@ -98,14 +112,14 @@ export const useTimerStore = defineStore('timer', () => {
   const oneCategory = ref([]);
 
   const getOneCategory = (id) => {
-    axios.get(`${REST_API_URL}/${id}/category`)
+    apiClient.get(`${REST_API_URL}/${id}/category`)
     .then((res)=>{
       oneCategory.value = res.data;
     });
   };
 
   const updateTimer = (id, updatedTimerRequest) => {
-    axios.put(`${REST_API_URL}/${id}`, updatedTimerRequest)
+    apiClient.put(`${REST_API_URL}/${id}`, updatedTimerRequest)
       .then((res)=>{
         console.log('타이머 수정 완료: ', res.data);
         getTimerList();
@@ -116,7 +130,7 @@ export const useTimerStore = defineStore('timer', () => {
   };
 
   const deleteTimer = (id) => {
-    axios.delete(`${REST_API_URL}/${id}`)
+    apiClient.delete(`${REST_API_URL}/${id}`)
       .then((res)=>{
         console.log('타이머 삭제 완료:', res.data);
         getTimerList();
@@ -125,6 +139,10 @@ export const useTimerStore = defineStore('timer', () => {
         console.error('타이머 삭제 실패: ', err);
       });
   };
+
+  const initTimer = () => {
+    timers.value = [];
+  }
 
   return {
     isOpenModal, toggleModal, openModal, closeModal,
@@ -138,5 +156,6 @@ export const useTimerStore = defineStore('timer', () => {
     healthCategory, gethealthCategory,
     oneCategory, getOneCategory,
     routine, getRoutine,
+    initTimer,
   }
 });
