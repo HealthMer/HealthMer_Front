@@ -23,6 +23,10 @@ export const useTimerStore = defineStore('timer', () => {
     isEditMode.value = true;
   }
 
+  const changeToDefaultMode = () => {
+    isEditMode.value = false;
+  }
+
   const timers = ref([]);
 
   const getTimerList = () => {
@@ -124,7 +128,7 @@ export const useTimerStore = defineStore('timer', () => {
 
   return {
     isOpenModal, toggleModal, openModal, closeModal,
-    isEditMode, changeToEditMode,
+    isEditMode, changeToEditMode, changeToDefaultMode,
     createTimer,
     oneTimer, getOneTimer,
     timers, getTimerList,

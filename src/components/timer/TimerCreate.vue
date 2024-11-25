@@ -261,6 +261,7 @@ const editTimerData = async (timerRequest) => {
 
 try{
     await timerStore.updateTimer(timerStore.oneTimer.timer.id, timerRequest);
+    timerStore.changeToDefaultMode();
     console.log("타이머 수정 완료");
     router.push('/timer');
     resetModal();
