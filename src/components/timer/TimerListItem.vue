@@ -4,9 +4,13 @@
             <li>{{ item.title }}</li>
             <li class="right-side">
                 <div>{{ formatTime }}</div>
-                <PlayBtnIcon />
+                <i v-if="!isRunning && !isStarted" @click="startRoutine" class="fa-solid fa-circle-play"></i>
                 <div class="see-more" @click.stop.prevent>
-                    <div class="icon" @click="isBoxOpen = !isBoxOpen">...</div>
+                    <div class="icon" >
+                        <i @click="isBoxOpen = !isBoxOpen" class="material-symbols-outlined">
+                            more_horiz
+                        </i>
+                    </div>
                     <div :class="{'open' : isBoxOpen}" class="box">
                         <div class="inner">
                             <p @click="updateTimer(item.id)">타이머 수정</p>
@@ -133,10 +137,16 @@ const formatTime = computed(()=>{
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    font-size: 1.54rem;
+    min-height: fit-content;
+    max-width: 100%;
 }
 
 .grid .list-item{
     height: 100%;
+    min-height: 310px;
+    flex-direction: column;
+    justify-content: center;
 }
 
 /* 이후 색약 고려하기 */
@@ -160,18 +170,29 @@ const formatTime = computed(()=>{
     display: flex;
     align-items: center;
 }
+.right-side > * {
+    margin: 0 1rem;
+}
 
-.right-side > div:first-child {
-    font-size: 2.5rem;
-    font-weight: bold;
+.right-side .fa-solid {
+    font-size: 3rem;
 }
 .right-side > div:first-child {
-    font-size: 2.5rem;
+    font-size: 3rem;
     font-weight: bold;
+}
+
+.grid .right-side {
+    flex-direction: column;
 }
 
 .see-more{
     position: relative;
+}
+.see-more .icon {
+    height: 100%;
+    display: flex;
+    align-items: center;
 }
 .see-more .box {
     display: none;

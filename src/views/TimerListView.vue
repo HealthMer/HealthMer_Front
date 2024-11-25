@@ -8,11 +8,11 @@
 
           <Category />
           <ul class="list-change-btn">
-              <span @click="makeGrid" class="material-symbols-outlined">
-                  grid_view
-              </span>
               <span @click="makeList" class="material-symbols-outlined">
                   view_list
+              </span>
+              <span @click="makeGrid" class="material-symbols-outlined">
+                  grid_view
               </span>
           </ul>
           <TimerList :isGrid="isGrid"/>
