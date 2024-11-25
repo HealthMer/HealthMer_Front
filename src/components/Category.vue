@@ -39,6 +39,7 @@ ul{
     justify-content: center;
     font-size: .9785rem;
     height: fit-content;
+    flex-wrap: wrap;
 }
 ul li{
  padding-left: .2rem;
