@@ -1,6 +1,6 @@
 <template>
-    <span>
-        ▶
+    <span class="material-symbols-outlined">
+        play_circle
     </span>
 </template>
 

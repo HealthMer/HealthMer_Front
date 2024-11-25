@@ -8,6 +8,7 @@
 
 *{
   box-sizing: border-box;
+  font-family: 'Pretendard-Regular';
 }
 
 html, body, #body, #app{
@@ -23,7 +24,6 @@ html, body, #body, #app{
 body {
   min-height: 100vh;
   line-height: 1.6;
-  font-family: 'Pretendard-Regular';
   font-size: 16pt;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -51,8 +51,4 @@ main > * {
 
 svg{
   fill: var(--icon-color);
-}
-
-footer{
-
 }

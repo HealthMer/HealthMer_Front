@@ -13,6 +13,10 @@ a{
   position: relative;
 }
 
+.material-symbols-outlined {
+  cursor: pointer;
+}
+
 /* #app {
   max-width: 1280px;
   margin: 0 auto;

@@ -8,7 +8,12 @@
 
           <Category />
           <ul class="list-change-btn">
-              <GridViewSvg @click="makeGrid"/> <ListViewSvg @click="makeList"/>
+              <span @click="makeGrid" class="material-symbols-outlined">
+                  grid_view
+              </span>
+              <span @click="makeList" class="material-symbols-outlined">
+                  view_list
+              </span>
           </ul>
           <TimerList :isGrid="isGrid"/>
           
@@ -57,8 +62,6 @@ import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import TimerCreate from '@/components/timer/TimerCreate.vue';
 import TimerList from '@/components/timer/TimerList.vue';
 import Category from '@/components/Category.vue';
-import GridViewSvg from '@/components/icons/GridViewSvg.vue';
-import ListViewSvg from '@/components/icons/ListViewSvg.vue';
 
 
 </script>
