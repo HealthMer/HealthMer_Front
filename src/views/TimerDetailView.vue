@@ -1,5 +1,6 @@
 <template>
     <minimal-layout>
+      {{ routine }}
       <div class="detail">
         <div class="back" @click="goBack">
           <-
@@ -7,8 +8,8 @@
 
         <div>
           <p>{{time}}</p>
-          <button @click="startTimer">시작</button>
-          <button @click="pauseTimer">정지</button>
+          <button @click="playTTS('start', '안 되나')">시작</button>
+          <button @click="playTTS2('end', '안 되나')">정지</button>
         </div>
 
         <div class="timer">
@@ -43,6 +44,37 @@ import { useHistoryStore } from '@/stores/history';
 import { useTimerStore } from '@/stores/timer';
 import { ref, computed, onMounted, watch } from 'vue';
 
+
+const playTTS = (option, text) => {
+
+  if (!window.speechSynthesis) {
+    console.error("Speech Synthesis not supported in this browser.");
+  }
+
+  let optionText = '';
+  if(option === "start"){
+    optionText = " 시작";
+  }else if(option === "end"){
+    optionText = " 종료"
+  }
+
+  // TTS API 호출
+  const utterance = new SpeechSynthesisUtterance(text+optionText);
+  utterance.lang = 'ko-KR';
+  window.speechSynthesis.speak(utterance);
+};
+
+const playTTS2 = (option, text) => {
+
+  let optionText = '';
+  if(option === "start"){
+    optionText = " 시작";
+  }else if(option === "end"){
+    optionText = " 종료"
+  }
+
+  responsiveVoice.speak(text+optionText, "Korean Female");
+}
 
 const route = useRoute();
 const router = useRouter();
