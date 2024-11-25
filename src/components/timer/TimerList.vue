@@ -10,7 +10,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watch } from 'vue';
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useTimerStore } from '@/stores/timer';
 import TimerlistItem from './TimerlistItem.vue';
@@ -26,6 +26,10 @@ const route = useRoute();
 onMounted(()=>{
     store.getTimerList();
 });
+
+onBeforeUnmount(()=> {
+    store.initTimer();
+})
 
 const updateTimerList = () => {
     store.getTimerList();
