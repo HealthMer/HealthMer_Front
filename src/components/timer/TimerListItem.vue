@@ -176,6 +176,10 @@ const formatTime = computed(()=>{
 
 .right-side .fa-solid {
     font-size: 3rem;
+    transition: color .3s;
+}
+.right-side .fa-solid:hover {
+    color: var(--point-color2);
 }
 .right-side > div:first-child {
     font-size: 3rem;
