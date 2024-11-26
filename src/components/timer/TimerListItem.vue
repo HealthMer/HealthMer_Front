@@ -192,8 +192,23 @@ const formatTime = computed(()=>{
 .see-more .icon {
     height: 100%;
     display: flex;
+    justify-content: center;
     align-items: center;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    transition: background-color .3s;
 }
+
+.see-more .icon:hover {
+    background-color: rgba(0, 0, 0, .3);
+}
+
+.see-more .icon i {
+    font-size: 36px;
+    line-height: 2;
+}
+
 .see-more .box {
     display: none;
     position: absolute;
@@ -201,6 +216,7 @@ const formatTime = computed(()=>{
     transform: translate(-50%, 12px);
     z-index: 1;
 }
+
 .see-more .box.open {
     display: block;
 }
@@ -212,9 +228,9 @@ const formatTime = computed(()=>{
     z-index: 1;
     width: 0;
     height: 0;
-    border-left: 9px solid transparent;
-    border-right: 9px solid transparent;
-    border-bottom: 12px solid #D9D9D9;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 14px solid #D9D9D9;
 }
 .see-more .box .inner {
     background-color: #D9D9D9;
