@@ -262,7 +262,6 @@ const progressStyle = computed(() => {
 });
 
 
-
 </script>
 
 <style scoped>
@@ -376,6 +375,9 @@ const progressStyle = computed(() => {
   background-color: var(--right-color, #C34141);
   z-index: -1;
   overflow: hidden;
+}
+.progress-background.green-to-red{
+  background-color: var(--right-color, #5FDAA3);
 }
 .progress-background::before {
   content: '';
