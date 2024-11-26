@@ -1,5 +1,5 @@
 <template>
-    <div class="input-field">
+    <div class="input-field" :class="{'select' : isSelect}">
         <label v-if="isLabel" :for="id">{{ labelContent }}</label>
         <input
             v-if="!isSelect && !isTextarea"
@@ -76,5 +76,26 @@ const updateValue = (e) => {
 
 .line input, .line select{
     border: 1px solid #000;
+}
+
+.input-field select {
+    appearance: none;
+    padding-right: 3rem;
+}
+
+.input-field.select {
+    position: relative;
+}
+.input-field.select::after {
+    content: '▼';
+    position: absolute;
+    top: 0;
+    right: 1rem;
+    z-index: 1;
+    font-size: .94rem;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 </style>

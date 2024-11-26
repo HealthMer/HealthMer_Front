@@ -362,6 +362,7 @@ const resetModal = () => {
     border-radius: 0 0 8px 8px;
     display: none;
     top: 100%;
+    z-index: 2;
 }
 
 .category-select.open {
@@ -447,6 +448,7 @@ const resetModal = () => {
 .category-option {
     transition: background-color .3s;
 }
+
 .category-option.checked {
     background-color: rgba(0, 0, 0, .3);
 }
