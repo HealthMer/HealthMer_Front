@@ -1,6 +1,7 @@
 <template>
     <ul>
-        <li v-for="category in categories" :key="category.name" @click="">{{category.name}}</li>
+        <li @click="store.getTimerList">All</li>
+        <li v-for="category in categories" :key="category.name" @click="store.getTimerListByCategoryId(category.id)">{{category.name}}{{ category.id }}</li>
     </ul>
 </template>
 

@@ -4,7 +4,7 @@
             <li>{{ item.title }}</li>
             <li class="right-side">
                 <div>{{ formatTime }}</div>
-                <i v-if="!isRunning && !isStarted" @click="startRoutine" class="fa-solid fa-circle-play"></i>
+                <i class="fa-solid fa-circle-play"></i>
                 <div class="see-more" @click.stop.prevent>
                     <div class="icon" >
                         <i @click="isBoxOpen = !isBoxOpen" class="material-symbols-outlined">

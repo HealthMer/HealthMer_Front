@@ -9,7 +9,7 @@ const apiClient = axios.create({
 apiClient.interceptors.request.use((config) => {
   if (config.url !== '/auth/login' && config.url !== '/auth/register') {
     const token = sessionStorage.getItem('access_token');
-    console.log(token)
+    // console.log(token)
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

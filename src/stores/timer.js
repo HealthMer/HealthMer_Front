@@ -15,7 +15,8 @@ export default {
   }
 };
 
-const REST_API_URL = `http://localhost:8080/api/v1/timer`;
+const REST_API_URL_TIMER = `http://localhost:8080/api/v1/timer`;
+const REST_API_URL_CATEGORY = `http://localhost:8080/api/v1/category`;
 
 export const useTimerStore = defineStore('timer', () => {
   const isOpenModal = ref(false);
@@ -44,7 +45,17 @@ export const useTimerStore = defineStore('timer', () => {
   const timers = ref([]);
 
   const getTimerList = () => {
-    apiClient.get(REST_API_URL)
+    apiClient.get(REST_API_URL_TIMER)
+    .then((res)=>{
+      timers.value = res.data;
+    })
+    .catch((err)=>{
+      console.error("에러 발생: ", err);
+    });
+  };
+
+  const getTimerListByCategoryId = (id) => {
+    apiClient.get(`${REST_API_URL_CATEGORY}/${id}`)
     .then((res)=>{
       timers.value = res.data;
     })
@@ -56,7 +67,7 @@ export const useTimerStore = defineStore('timer', () => {
   const oneTimer = ref({});
 
   const getOneTimer = (id) => {
-    apiClient.get(`${REST_API_URL}/${id}`)
+    apiClient.get(`${REST_API_URL_TIMER}/${id}`)
     .then((res)=>{
       oneTimer.value = res.data;
     })
@@ -67,7 +78,7 @@ export const useTimerStore = defineStore('timer', () => {
 
   const searchTimers = (searchCondition) => {
 
-    apiClient.get(`${REST_API_URL}/search`,{
+    apiClient.get(`${REST_API_URL_TIMER}/search`,{
       params : searchCondition
     })
     .then((res)=>{
@@ -82,14 +93,14 @@ export const useTimerStore = defineStore('timer', () => {
   const routine = ref([]);
 
   const getRoutine = (id) => {
-    apiClient.get(`${REST_API_URL}/${id}/routine`)
+    apiClient.get(`${REST_API_URL_TIMER}/${id}/routine`)
     .then((res)=>{
       routine.value = res.data;
     });
   };
   
   const createTimer = (timerRequest) => {
-    apiClient.post(`${REST_API_URL}/create`, timerRequest)
+    apiClient.post(`${REST_API_URL_TIMER}/create`, timerRequest)
       .then((res)=>{
         console.log('새로운 타이머 생성 완료:', res.data);
         getTimerList();
@@ -103,7 +114,7 @@ export const useTimerStore = defineStore('timer', () => {
   const healthCategory = ref([]);
   
   const gethealthCategory = () => {
-    apiClient.get(`${REST_API_URL}/category`)
+    apiClient.get(`${REST_API_URL_TIMER}/category`)
     .then((res)=>{
       healthCategory.value = res.data;
     });
@@ -112,14 +123,14 @@ export const useTimerStore = defineStore('timer', () => {
   const oneCategory = ref([]);
 
   const getOneCategory = (id) => {
-    apiClient.get(`${REST_API_URL}/${id}/category`)
+    apiClient.get(`${REST_API_URL_TIMER}/${id}/category`)
     .then((res)=>{
       oneCategory.value = res.data;
     });
   };
 
   const updateTimer = (id, updatedTimerRequest) => {
-    apiClient.put(`${REST_API_URL}/${id}`, updatedTimerRequest)
+    apiClient.put(`${REST_API_URL_TIMER}/${id}`, updatedTimerRequest)
       .then((res)=>{
         console.log('타이머 수정 완료: ', res.data);
         getTimerList();
@@ -130,7 +141,7 @@ export const useTimerStore = defineStore('timer', () => {
   };
 
   const deleteTimer = (id) => {
-    apiClient.delete(`${REST_API_URL}/${id}`)
+    apiClient.delete(`${REST_API_URL_TIMER}/${id}`)
       .then((res)=>{
         console.log('타이머 삭제 완료:', res.data);
         getTimerList();
@@ -149,7 +160,7 @@ export const useTimerStore = defineStore('timer', () => {
     isEditMode, changeToEditMode, changeToDefaultMode,
     createTimer,
     oneTimer, getOneTimer,
-    timers, getTimerList,
+    timers, getTimerList, getTimerListByCategoryId,
     searchTimers,
     updateTimer,
     deleteTimer,
