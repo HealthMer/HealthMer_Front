@@ -219,7 +219,6 @@ const submitTimerData = () => {
 
     const timerRequest = {
         timer : {
-            userId : 1,
             title : timerData.value.title,
             level : parseInt(timerData.value.level),
         },
