@@ -79,6 +79,9 @@ watch(routine, (newRoutine) => {
 // 음성 on/off
 const toggleMute = () => {
   isMute.value = !isMute.value;
+  if(isMute.value){
+    window.speechSynthesis.cancel();
+  }
 };
 
 // 분 : 초 형식으로 시간 변환
@@ -182,6 +185,12 @@ const resetRoutine = () => {
 
 // TTS(Text-to-speech) 소리 재생
 const playTTS = (text) => {
+
+  if (isMute.value) {
+    window.speechSynthesis.cancel();
+    return;
+  }
+
   //브라우저 음성이 없을 경우 다른 API(responsiveVoice)로 재생
   if (!window.speechSynthesis) {
     console.error("Speech Synthesis not supported in this browser.");
@@ -189,15 +198,21 @@ const playTTS = (text) => {
     return;
   }
 
-  if (!isMute.value) {
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'ko-KR';
-    window.speechSynthesis.speak(utterance);
-  }
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'ko-KR';
+  
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(utterance);
 };
 
 // responsiveVoice
 const playTTS2 = (text) => {
+
+  if(isMute.value){
+    return;
+  }
+  
+  responsiveVoice.cancel();
   responsiveVoice.speak(text, "Korean Female");
 };
 
