@@ -14,10 +14,10 @@
             <div class="left-page"></div>
             <div class="right-page">
                 <ul>
-                    <li><router-link :to="{name: 'timer-list'}">Timer</router-link></li>
+                    <li class="hov"><router-link :to="{name: 'timer-list'}">Timer</router-link></li>
                     <!-- <li><router-link :to="{name: 'main'}">Video</router-link></li> -->
-                    <li><router-link :to="{name: 'community-list'}">Community</router-link></li>
-                    <li><router-link :to="{name: 'main'}">MyPage</router-link></li>
+                    <li class="hov"><router-link :to="{name: 'community-list'}">Community</router-link></li>
+                    <li class="hov"><router-link :to="{name: 'main'}">MyPage</router-link></li>
                 </ul>
                 <hr />
                 <ul>
@@ -134,16 +134,35 @@ nav .left-page::before {
 nav .right-page {
     position: relative;
     height: 100%;
-    width: auto;
+    width: 100%;
     padding: 85px;
     padding-top: calc(111px + 85px);
+}
+
+nav .right-page ul {
+    margin: 1rem;
+}
+nav .right-page ul:first-child {
+    margin-bottom: 6rem;
+}
+nav .right-page ul:nth-child(3) {
+    margin-top: 3rem;
+}
+
+nav .right-page ul li {
+    margin: 1rem 0;
+}
+
+nav .right-page ul li button {
+    margin: 1rem 0;
+    width: 9rem;
 }
 
 .light nav .left-page{
     background-color: #cecece;
 }
 
-nav a:after {
+.hov a:after {
   content: '';
   height: 0;
   position: absolute;
@@ -156,7 +175,7 @@ nav a:after {
   transition: height .3s;
 }
 
-nav a:hover:after {
+.hov a:hover:after {
   height: 100%;
 }
 
