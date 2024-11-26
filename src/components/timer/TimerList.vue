@@ -5,6 +5,7 @@
                 :key="item.id"
                 :item="item"
                 :updateTimerList="updateTimerList"
+                :isGrid="isGrid"
                 />
             <div v-if="!store.timers || store.timers.length === 0" class="no-timer">No Timer</div>
     </div>

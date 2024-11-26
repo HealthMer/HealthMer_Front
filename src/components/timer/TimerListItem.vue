@@ -8,7 +8,7 @@
                 <div class="see-more" @click.stop.prevent>
                     <div class="icon" >
                         <i @click="isBoxOpen = !isBoxOpen" class="material-symbols-outlined">
-                            more_horiz
+                            {{isGrid ? 'more_vert':'more_horiz'}}
                         </i>
                     </div>
                     <div :class="{'open' : isBoxOpen}" class="box">
@@ -33,12 +33,11 @@ import { useRouter } from 'vue-router';
 const props = defineProps({
     item : Object,
     updateTimerList : Function,
+    isGrid: Boolean,
 });
 
 const store = useTimerStore();
 const router = useRouter();
-
-const isGrid = ref(false);
 
 const isBoxOpen = ref(false);
 
@@ -131,6 +130,7 @@ const formatTime = computed(()=>{
     color: #fff;
     border-radius: 30px;
     background-color: #5FA3DA;
+    position: relative;
 }
 
 .list-item > *:first-child{
@@ -202,6 +202,12 @@ const formatTime = computed(()=>{
     width: 50px;
     height: 50px;
     transition: background-color .3s;
+}
+
+.grid .see-more {
+    position: absolute;
+    right: .2rem;
+    top: 1rem;
 }
 
 .see-more .icon:hover {
