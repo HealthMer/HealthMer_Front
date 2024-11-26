@@ -107,7 +107,7 @@ const newTimerReq = computed(()=>{
 const timerData = ref({
     id: null,
     title: '',
-    level: null,
+    level: 1,
     categories : [],
     routines: [],
 });

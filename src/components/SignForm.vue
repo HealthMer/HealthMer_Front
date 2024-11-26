@@ -1,15 +1,15 @@
 <template>
     <div class="sign-box">
-        <Logo class="large"/>
+        <Logo class="large" @click="window.history.pushState({}, '', `/${anotherSign.value}`);"/>
         <div class="sign-form">
             <h2>{{ formTitle }}</h2>
 
             <div class="slide-box" :style="{height: fitHeight + 'px'}">
                 <transition-group :name="slideTransitionName">
                     <div :key="currentPage" v-if="currentPage == 1" class="slide">
-                        <InputField :id="'email'" :name="'email'" :type="'email'" v-model.trim="email" :placeholder="'이메일'" class="full"/>
-                        <InputField :id="'password'" :name="'password'" :type="'password'" v-model.trim="password" :placeholder="'비밀번호'" class="full"/>
-                        <InputField v-if="isSignup" :id="'passcheck'" :name="'passcheck'" :type="'password'" v-model="passcheck" :placeholder="'비밀번호 확인'" class="full"/>
+                        <InputField :id="'email'" :name="'email'" :type="'email'" v-model.trim="email" :placeholder="'이메일'" class="full" :required="true"/>
+                        <InputField :id="'password'" :name="'password'" :type="'password'" v-model.trim="password" :placeholder="'비밀번호'" class="full" :required="true"/>
+                        <InputField v-if="isSignup" :id="'passcheck'" :name="'passcheck'" :type="'password'" v-model="passcheck" :placeholder="'비밀번호 확인'" class="full" :required="true"/>
                     </div>
                     <div :key="currentPage" v-if="isSignup && currentPage == 2" class="slide">
                         <InputField :id="'nickname'" :name="'nickname'" :type="'text'" v-model="nickname" :placeholder="'닉네임'" class="full"/>
@@ -71,23 +71,12 @@ const password = ref('');
 const passcheck = ref('');
 const nickname = ref('');
 const age = ref(null);
-const gender = ref('');
+const gender = ref(1);
 const genderOptions = ref([
     {value: 1, name: 'MALE'},
     {value: 2, name: 'FEMALE'},
     {value: 3, name: 'ETC'},
 ]);
-
-//차후 구현 추가
-const nextUrl = computed(()=>{
-    if(props.isSignup === true && currentPage.value === maxPage.value){
-        //회원가입
-        return '/'
-    } else if (props.isSignup === false && currentPage.value === maxPage.value){
-        //로그인
-        return '/'
-    }
-});
 
 if(props.isSignup === true){
     maxPage.value = 2;
@@ -128,8 +117,24 @@ const goToNext = () => {
     } else if (currentPage.value === maxPage.value) {
         if (props.isSignup) {
             // console.log("korea.....")
+
+            if(email.value.trim() === null || email.value.trim() === ''){
+                alert('이메일은 필수 입력입니다.');
+                return;
+            }
+
+            if(password.value.trim() === null || password.value.trim() === ''){
+                alert('비밀번호를 입력해주세요.');
+                return;
+            }
+
             if (password.value !== passcheck.value) {
                 alert('비밀번호가 일치하지 않습니다.');
+                return;
+            }
+            
+            if(gender.value < 1 || gender.value > 3){
+                alert('잘못된 입력입니다.');
                 return;
             }
 

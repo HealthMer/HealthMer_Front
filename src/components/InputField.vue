@@ -9,6 +9,7 @@
             :placeholder="placeholder"
             :value="modelValue"
             @input="updateValue"
+            :required="required"
             />
         <select
             v-if="isSelect"
@@ -16,6 +17,7 @@
             :name="name"
             :placeholder="placeholder"
             :value="modelValue"
+            :required="required"
             @change="updateValue"
             >
             <option v-for="op in options" :value="op.value" :key="op.value">{{ op.name }}</option>
@@ -43,6 +45,10 @@ defineProps({
         default: false,
     },
     isTextarea: {
+        type : Boolean,
+        default: false,
+    },
+    required: {
         type : Boolean,
         default: false,
     },
