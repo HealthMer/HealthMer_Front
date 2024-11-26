@@ -22,9 +22,12 @@
         </div>
       </div>
       <div :key="currentPage" v-if="currentPage === 2" class="background">
-        <Btn>
-          나만의 타이머 등록하러 가기
-        </btn>
+        <LogoFullSvg />
+        <router-Link :to="{name: 'timer-list'}">
+          <btn>
+            나만의 타이머 등록하러 가기
+          </btn>
+        </router-Link>
       </div>
     </transition-group>
   </default-layout>
@@ -32,8 +35,10 @@
 
 <script setup>
 import Btn from '@/components/Btn.vue';
+import LogoFullSvg from '@/components/common/LogoFullSvg.vue';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { RouterLink } from 'vue-router';
 
 const currentPage = ref(1);
 const currentWheel = ref('');
@@ -160,5 +165,28 @@ onBeforeUnmount(() => {
 .letter:first-child,
 .letter:nth-child(6) {
   color: var(--point-color2);
+}
+
+.background > * {
+  margin: 1rem;
+}
+
+.background svg * {
+  fill: var(--point-color2);
+  animation: textbg 1.5s linear infinite;
+}
+
+
+
+@keyframes textbg {
+    0%{
+      color: var(--point-color);
+    }
+    50%{
+      fill: var(--point-color);
+    }
+    100%{
+      color: var(--point-color);
+    }
 }
 </style>
