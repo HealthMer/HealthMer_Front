@@ -53,6 +53,12 @@ router.beforeEach((to, from, next) => {
   const userStore = useUserStore();
   const isAuthenticated = userStore.isAuthenticated; // 로그인 여부 확인 (토큰이 있는지 등)
 
+  // 이미 인증이 된 경우
+  if ((to.name === 'signin' || to.name === 'signup') && isAuthenticated) {
+    alert('로그아웃이 필요합니다.')
+    next({ name: 'main' }); // main 페이지로 리디렉션
+  }
+
   // 인증이 필요한 페이지에 접근하려는 경우
   if (to.meta.requireAuth && !isAuthenticated) {
     // 로그인 페이지로 리디렉션
