@@ -21,7 +21,7 @@
           <span class="letter">R</span>
         </div>
       </div>
-      <div :key="currentPage" v-if="currentPage === 2" class="background">
+      <div :key="currentPage" v-if="currentPage === 2" class="background second">
         <LogoFullSvg />
         <router-Link :to="{name: 'timer-list'}">
           <btn>
@@ -167,7 +167,7 @@ onBeforeUnmount(() => {
   color: var(--point-color2);
 }
 
-.background > * {
+.background.second > * {
   margin: 1rem;
 }
 
